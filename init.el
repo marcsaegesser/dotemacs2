@@ -48,6 +48,7 @@
 
 ;; Preferences
 (setq-default
+ auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
  blink-cursor-delay 0
  browse-url-browser-function 'browse-url-generic
  browse-url-generic-program "google-chrome"
@@ -437,6 +438,14 @@
 
 (use-package flycheck
   :ensure t
+  :config
+  (add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+              (display-buffer-reuse-window
+               display-buffer-in-side-window)
+              (side            . bottom)
+              (reusable-frames . visible)
+              (window-height   . 0.20)))
   :init (global-flycheck-mode))
 
 (use-package flycheck-haskell
@@ -1225,6 +1234,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    'self-insert-command
    minibuffer-local-completion-map)
   ;; (setq sbt:program-options '("-Djline.terminal=none"))
+  (setq sbt:program-options '("-Dsbt.supershell=false"))
   )
 
 ;; (use-package sbt-mode
@@ -1321,6 +1331,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   ;; See https://github.com/Malabarba/smart-mode-line/issues/217
   (setq mode-line-format (delq 'mode-line-position mode-line-format))
+  (column-number-mode t)
   (sml/setup)
   (sml/apply-theme 'respectful)
   (remove-hook 'display-time-hook 'sml/propertize-time-string))
