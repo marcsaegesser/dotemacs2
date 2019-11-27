@@ -53,6 +53,7 @@
  browse-url-browser-function 'browse-url-generic
  browse-url-generic-program "google-chrome"
  c-basic-offset 4
+ create-lockfiles nil
  indent-tabs-mode nil
  inhibit-startup-screen t
  inhibit-startup-echo-area-message t
@@ -902,21 +903,18 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :hook (scala-mode . lsp)
   :config (setq lsp-prefer-flymake nil))
 
+(use-package lsp-treemacs
+  :ensure t
+  ;; :config
+  ;; (lsp-metals-treeview-enable t)
+  ;; (setq lsp-metals-treeview-show-when-views-received t)
+  :commands lsp-treemacs-errors-list)
+
 (use-package lsp-ui
   :ensure t)
 
 (use-package company-lsp
   :ensure t)
-
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :hook (lsp-mode . lsp-ui-mode))
-
-;; (use-package lsp-scala
-;;   :ensure t
-;;   :after scala-mode
-;;   :demand t
-;;   :hook (scala-mode . lsp))
 
 (use-package lua-mode
   :mode "\\.lua\\'"
@@ -1283,7 +1281,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
           (indent-region beg end)))))
   (defun my-scala-mode-hook ()
     (setq prettify-symbols-alist scala-prettify-symbols-alist
-          indent-tabs-mode nil)
+          indent-tabs-mode nil
+          scala-indent:default-run-on-strategy scala-indent:eager-strategy)
     (rainbow-delimiters-mode t)
     (smartparens-strict-mode t)
     (highlight-symbol-mode t)
