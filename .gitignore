@@ -35,3 +35,4 @@ ensime-emacs
 network-security.data
 transient
 .lsp-session*
+.dap-breakpoints
