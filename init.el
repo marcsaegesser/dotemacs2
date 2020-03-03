@@ -353,6 +353,15 @@
 ;;   :ensure t
 ;;   )
 
+(use-package dired
+  :config
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq delete-by-moving-to-trash t)
+  (setq dired-listing-switches "-AFhlv --group-directories-first")
+  (setq dired-dwim-target t)
+  :hook ((dired-mode . hl-line-mode)))
+
 (use-package dired-sidebar
   :ensure t
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
@@ -862,6 +871,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :after json-mode)
 
+(use-package keycast
+  :ensure t
+  :config
+  (keycast-mode t))
+
 (use-package key-chord
   :ensure t
   :config
@@ -870,6 +884,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package use-package-chords
   :ensure t
   :config (key-chord-mode 1))
+
+(use-package kubernetes
+  :ensure t
+  :commands (kubernetes-overview))
 
 (use-package labburn-theme
   :ensure t)
@@ -1133,6 +1151,17 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :hook (flymake-php-load)
   )
+
+;; Use the Debug Adapter Protocol for running tests and debugging
+(use-package posframe
+  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
+  :ensure t)
+
+(use-package dap-mode
+  :ensure t
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
 
 (use-package projectile
   :ensure t
@@ -1443,7 +1472,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :diminish
   :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (setq undo-tree-enable-undo-in-region t))
 
 (use-package unfill
   :ensure t)
