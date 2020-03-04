@@ -177,6 +177,9 @@
   ;; (load-theme 'alect-dark t)
   )
 
+(use-package arduino-mode
+  :ensure t)
+
 (use-package arjen-grey-theme
   :ensure t)
 
