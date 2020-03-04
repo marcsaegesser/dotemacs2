@@ -20,148 +20,155 @@
 
 (require 'use-package)
 
-;; Platform detection
-(defconst *spell-check-support-enabled* nil)
-(defconst *is-a-mac* (eq system-type 'darwin))
-(defconst *is-carbon-emacs* (eq window-system 'mac))
-(defconst *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
+;; Set up default font on startup
+(use-package emacs
+  :config
+  (defconst mas/fixed-pitch-font "Iosevka Type"
+    "The default fixed-pitch typeface.")
 
-;; Set up to use require-package.
-;; Really only needed to ensure we can get use-package
-;; (require 'init-utils)
-;; (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
-;; (require 'init-elpa)      ;; Machinery for installing required packages
+  (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
+    "Fontconfig parameters for the fixed-pitch typeface.")
 
-;; (eval-when-compile
-;;   (require 'use-package))
-;; (eval-and-compile
-;;   (require-package 'use-package)
+  (defun mas/set-default-font (family size)
+    "Set frame font to FAMILY at SIZE."
+    (set-frame-font
+     (concat family "-" (number-to-string size) mas/fixed-pitch-params) t t))
 
-;;   (if init-file-debug
-;;       (setq use-package-verbose t
-;;             use-package-expand-minimally nil
-;;             use-package-compute-statistics t
-;;             debug-on-error t)
-;;     (setq use-package-verbose nil
-;;           use-package-expand-minimally t)))
+  (defun mas/set-font-desktop ()
+    "Set font for desktop computer"
+    (mas/set-default-font mas/fixed-pitch-font 10))
 
+  (defun mas/set-font-laptop ()
+    "Set font for un-docked laptop computer"
+    (mas/set-default-font mas/fixed-pitch-font 11))
+
+  (defun mas/start-font ()
+    "Set the initial default font. TODO - query system to determine platform."
+    (interactive)
+    (when (display-graphic-p)
+      (mas/set-font-desktop)))
+
+  :hook
+  (after-init . mas/start-font)
+  )
 
 ;; Preferences
-(setq-default
- auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
- blink-cursor-delay 0
- browse-url-browser-function 'browse-url-generic
- browse-url-generic-program "google-chrome"
- c-basic-offset 4
- create-lockfiles nil
- indent-tabs-mode nil
- inhibit-startup-screen t
- inhibit-startup-echo-area-message t
- initial-scratch-message ""
- make-backup-files nil
- mouse-yank-at-point t
- next-screen-context-lines 2
- save-interprogram-paste-before-kill t
- set-mark-command-repeat-pop t
- show-trailing-whitespace t
- tab-width 4
- tooltip-delay 1.5
- truncate-lines t
- truncate-partial-width-windows nil
- use-file-dialog nil
- use-dialog-box nil
- visible-bell nil
- window-combintaion-resize t
- x-select-enable-clipboard t
+(use-package emacs
+  :config
+  (setq-default
+   auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+   blink-cursor-delay 0
+   browse-url-browser-function 'browse-url-generic
+   browse-url-generic-program "google-chrome"
+   c-basic-offset 4
+   create-lockfiles nil
+   indent-tabs-mode nil
+   inhibit-startup-screen t
+   inhibit-startup-echo-area-message t
+   initial-scratch-message ""
+   make-backup-files nil
+   mouse-yank-at-point t
+   next-screen-context-lines 2
+   save-interprogram-paste-before-kill t
+   set-mark-command-repeat-pop t
+   show-trailing-whitespace t
+   tab-width 4
+   tooltip-delay 1.5
+   truncate-lines t
+   truncate-partial-width-windows nil
+   use-file-dialog nil
+   use-dialog-box nil
+   visible-bell nil
+   window-combintaion-resize t
+   x-select-enable-clipboard t
+   )
+
+  (blink-cursor-mode 0)
+  (cua-mode 0)
+  (cua-selection-mode t) ; for rectangles, CUA is nice
+  (when (display-graphic-p) (fringe-mode 4))
+  (menu-bar-mode -1)
+  (tool-bar-mode 0)
+  (transient-mark-mode t)
+  (global-auto-revert-mode t)
+
+  (global-set-key (kbd "RET") 'newline-and-indent)
+
+  ;; To be able to M-x without meta
+  (global-set-key (kbd "C-x C-m") 'execute-extended-command)
+
+  ;; More convenient join-line bindings
+  (global-set-key (kbd "C-M-S-j") 'join-line)
+  (global-set-key (kbd "C-M-j") (lambda () (interactive) (join-line 1)))
+
+  (global-set-key (kbd "C-.") 'set-mark-command)
+  (global-set-key (kbd "C-x C-.") 'pop-global-mark)
+
+  ;; Buffer/Frame navigation
+  (global-set-key (kbd "C-S-n") 'next-buffer)
+  (global-set-key (kbd "C-S-p") 'previous-buffer)
+  (global-set-key (kbd "C-M-S-n") 'next-multiframe-window)
+  (global-set-key (kbd "C-M-S-p") 'previous-multiframe-window)
+
+  (global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
+
+  ;; Setup greek key bindings
+  (global-set-key (kbd "M-g a") "α")
+  (global-set-key (kbd "M-g b") "β")
+  (global-set-key (kbd "M-g g") "γ")
+  (global-set-key (kbd "M-g d") "δ")
+  (global-set-key (kbd "M-g e") "ε")
+  (global-set-key (kbd "M-g z") "ζ")
+  (global-set-key (kbd "M-g h") "η")
+  (global-set-key (kbd "M-g q") "θ")
+  (global-set-key (kbd "M-g i") "ι")
+  (global-set-key (kbd "M-g k") "κ")
+  (global-set-key (kbd "M-g l") "λ")
+  (global-set-key (kbd "M-g m") "μ")
+  (global-set-key (kbd "M-g n") "ν")
+  (global-set-key (kbd "M-g x") "ξ")
+  (global-set-key (kbd "M-g o") "ο")
+  (global-set-key (kbd "M-g p") "π")
+  (global-set-key (kbd "M-g r") "ρ")
+  (global-set-key (kbd "M-g s") "σ")
+  (global-set-key (kbd "M-g t") "τ")
+  (global-set-key (kbd "M-g u") "υ")
+  (global-set-key (kbd "M-g f") "φ")
+  (global-set-key (kbd "M-g j") "φ")
+  (global-set-key (kbd "M-g c") "χ")
+  (global-set-key (kbd "M-g y") "ψ")
+  (global-set-key (kbd "M-g w") "ω")
+  (global-set-key (kbd "M-g A") "Α")
+  (global-set-key (kbd "M-g B") "Β")
+  (global-set-key (kbd "M-g G") "Γ")
+  (global-set-key (kbd "M-g D") "Δ")
+  (global-set-key (kbd "M-g E") "Ε")
+  (global-set-key (kbd "M-g Z") "Ζ")
+  (global-set-key (kbd "M-g H") "Η")
+  (global-set-key (kbd "M-g Q") "Θ")
+  (global-set-key (kbd "M-g I") "Ι")
+  (global-set-key (kbd "M-g K") "Κ")
+  (global-set-key (kbd "M-g L") "Λ")
+  (global-set-key (kbd "M-g M") "Μ")
+  (global-set-key (kbd "M-g N") "Ν")
+  (global-set-key (kbd "M-g X") "Ξ")
+  (global-set-key (kbd "M-g O") "Ο")
+  (global-set-key (kbd "M-g P") "Π")
+  (global-set-key (kbd "M-g R") "Ρ")
+  (global-set-key (kbd "M-g S") "Σ")
+  (global-set-key (kbd "M-g T") "Τ")
+  (global-set-key (kbd "M-g U") "Υ")
+  (global-set-key (kbd "M-g F") "Φ")
+  (global-set-key (kbd "M-g J") "Φ")
+  (global-set-key (kbd "M-g C") "Χ")
+  (global-set-key (kbd "M-g Y") "Ψ")
+  (global-set-key (kbd "M-g W") "Ω")
+
+  ;; don't show trailing whitespace in SQLi, inf-ruby etc.
+  (dolist (hook '(term-mode-hook comint-mode-hook compilation-mode-hook))
+    (add-hook hook
+              (lambda () (setq show-trailing-whitespace nil))))
 )
-
-(blink-cursor-mode 0)
-(cua-mode 0)
-(cua-selection-mode t) ; for rectangles, CUA is nice
-(when (display-graphic-p) (fringe-mode 4))
-(menu-bar-mode -1)
-(tool-bar-mode 0)
-(transient-mark-mode t)
-(global-auto-revert-mode t)
-
-(global-set-key (kbd "RET") 'newline-and-indent)
-
-;; To be able to M-x without meta
-(global-set-key (kbd "C-x C-m") 'execute-extended-command)
-
-;; More convenient join-line bindings
-(global-set-key (kbd "C-M-S-j") 'join-line)
-(global-set-key (kbd "C-M-j") (lambda () (interactive) (join-line 1)))
-
-(global-set-key (kbd "C-.") 'set-mark-command)
-(global-set-key (kbd "C-x C-.") 'pop-global-mark)
-
-;; Buffer/Frame navigation
-(global-set-key (kbd "C-S-n") 'next-buffer)
-(global-set-key (kbd "C-S-p") 'previous-buffer)
-(global-set-key (kbd "C-M-S-n") 'next-multiframe-window)
-(global-set-key (kbd "C-M-S-p") 'previous-multiframe-window)
-
-(global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
-
-;; Setup greek key bindings
-(global-set-key (kbd "M-g a") "α")
-(global-set-key (kbd "M-g b") "β")
-(global-set-key (kbd "M-g g") "γ")
-(global-set-key (kbd "M-g d") "δ")
-(global-set-key (kbd "M-g e") "ε")
-(global-set-key (kbd "M-g z") "ζ")
-(global-set-key (kbd "M-g h") "η")
-(global-set-key (kbd "M-g q") "θ")
-(global-set-key (kbd "M-g i") "ι")
-(global-set-key (kbd "M-g k") "κ")
-(global-set-key (kbd "M-g l") "λ")
-(global-set-key (kbd "M-g m") "μ")
-(global-set-key (kbd "M-g n") "ν")
-(global-set-key (kbd "M-g x") "ξ")
-(global-set-key (kbd "M-g o") "ο")
-(global-set-key (kbd "M-g p") "π")
-(global-set-key (kbd "M-g r") "ρ")
-(global-set-key (kbd "M-g s") "σ")
-(global-set-key (kbd "M-g t") "τ")
-(global-set-key (kbd "M-g u") "υ")
-(global-set-key (kbd "M-g f") "φ")
-(global-set-key (kbd "M-g j") "φ")
-(global-set-key (kbd "M-g c") "χ")
-(global-set-key (kbd "M-g y") "ψ")
-(global-set-key (kbd "M-g w") "ω")
-(global-set-key (kbd "M-g A") "Α")
-(global-set-key (kbd "M-g B") "Β")
-(global-set-key (kbd "M-g G") "Γ")
-(global-set-key (kbd "M-g D") "Δ")
-(global-set-key (kbd "M-g E") "Ε")
-(global-set-key (kbd "M-g Z") "Ζ")
-(global-set-key (kbd "M-g H") "Η")
-(global-set-key (kbd "M-g Q") "Θ")
-(global-set-key (kbd "M-g I") "Ι")
-(global-set-key (kbd "M-g K") "Κ")
-(global-set-key (kbd "M-g L") "Λ")
-(global-set-key (kbd "M-g M") "Μ")
-(global-set-key (kbd "M-g N") "Ν")
-(global-set-key (kbd "M-g X") "Ξ")
-(global-set-key (kbd "M-g O") "Ο")
-(global-set-key (kbd "M-g P") "Π")
-(global-set-key (kbd "M-g R") "Ρ")
-(global-set-key (kbd "M-g S") "Σ")
-(global-set-key (kbd "M-g T") "Τ")
-(global-set-key (kbd "M-g U") "Υ")
-(global-set-key (kbd "M-g F") "Φ")
-(global-set-key (kbd "M-g J") "Φ")
-(global-set-key (kbd "M-g C") "Χ")
-(global-set-key (kbd "M-g Y") "Ψ")
-(global-set-key (kbd "M-g W") "Ω")
-
-
-;; Move this someplace better? mas 2/10/2018
-;; But don't show trailing whitespace in SQLi, inf-ruby etc.
-(dolist (hook '(term-mode-hook comint-mode-hook compilation-mode-hook))
-  (add-hook hook
-            (lambda () (setq show-trailing-whitespace nil))))
 
 ;; Load packages
 
@@ -352,10 +359,6 @@
   :config
   (delete-selection-mode 1))
 
-;; (use-package dired+
-;;   :ensure t
-;;   )
-
 (use-package dired
   :config
   (setq dired-recursive-copies 'always)
@@ -364,6 +367,10 @@
   (setq dired-listing-switches "-AFhlv --group-directories-first")
   (setq dired-dwim-target t)
   :hook ((dired-mode . hl-line-mode)))
+
+(use-package diredfl
+  :ensure t
+  :hook (dired-mode . diredfl-mode))
 
 (use-package dired-sidebar
   :ensure t
@@ -390,6 +397,30 @@
     ;; M-x all-the-icons-install-fonts
     :ensure t
     :commands (all-the-icons-dired-mode)))
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :config
+  (setq dired-subtree-use-backgrounds nil)
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)
+              ("<C-tab>" . dired-subtree-cycle)
+              ("<S-iso-lefttab>" . dired-subtree-remove)))
+
+(use-package dired-x
+  :after dired
+  :config
+  (setq dired-clean-up-buffers-too t)
+  (setq dired-clean-confirm-killing-deleted-buffers t)
+  (setq dired-x-hands-off-my-keys t)
+  (setq dired-bind-man nil)
+  (setq dired-bind-info nil)
+
+  :bind (("C-x C-j" . dired-jump)
+         ("s-j" . dired-jump)
+         ("C-x 4 C-j" . dired-jump-other-window)
+         ("s-J" . dired-jump-other-window)))
 
 (use-package dockerfile-mode
   :ensure t
@@ -500,7 +531,6 @@
 
 (use-package groovy-mode
   :ensure t)
-
 
 (use-package grep
   :no-require
@@ -624,7 +654,8 @@
 
 (use-package hl-line
   :commands hl-line-mode
-  :bind ("M-o h" . hl-line-mode))
+  :bind ("M-o h" . hl-line-mode)
+  :config (global-hl-line-mode t))
 
 ;; (use-package hl-line+
 ;;   :after hl-line)
@@ -876,7 +907,12 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package keycast
   :ensure t
+  :after moody
   :config
+  (setq keycast-window-predicate 'moody-window-active-p)
+  (setq keycast-separator-width 1)
+  (setq keycast-insert-after 'mode-line-buffer-identification)
+  (setq keycast-remove-tail-elements nil)
   (keycast-mode t))
 
 (use-package key-chord
@@ -985,11 +1021,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq mmm-global-mode 'buffers-with-submode-classes)
   (setq mmm-submode-decoration-level 2))
 
-;; (use-package moody
-;;   :ensure t
-;;   :config
-;;   (moody-replace-mode-line-buffer-identification)
-;;   (moody-replace-vc-mode))
+(use-package moody
+  :ensure t)
 
 (use-package multiple-cursors
   :ensure t
@@ -1353,6 +1386,27 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :no-require
   :hook (after-init . server-start))
 
+(use-package shell
+  :commands shell-command
+  :config
+  (setq ansi-color-for-comint-mode t)
+;;  (setq shell-command-prompt-show-cwd t) ; Emacs 27.1
+
+  (defun prot/shell-multi ()
+    "Spawn a new instance of `shell' and give it a unique name
+based on the directory of the current buffer."
+    (interactive)
+    (let* ((parent (if (buffer-file-name)
+                       (file-name-directory (buffer-file-name))
+                     default-directory))
+           (name (car (last (split-string parent "/" t)))))
+      (with-current-buffer (shell)
+        (rename-buffer
+         (generate-new-buffer-name (concat "*shell: " name "*"))))))
+  :bind (("<s-return>" . shell)
+         ("<s-S-return>" . prot/shell-multi))
+  :hook (shell-mode . ansi-color-for-comint-mode-on))
+
 (use-package slime-theme
   :ensure t)
 
@@ -1497,6 +1551,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :diminish
   :config
   (volatile-highlights-mode t))
+
+(use-package visual-regexp
+  :ensure t
+  :bind (("C-c r" . vr/replace)
+         ("C-c q" . vr/query-replace)
+         ("C-c m" . vr/mc-mark))
+  :config
+  (setq vr/match-separator-use-custom-face t))
 
 (use-package wgrep
   :defer 5)
