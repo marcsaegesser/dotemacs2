@@ -23,8 +23,10 @@
 ;; Set up default font on startup
 (use-package emacs
   :config
-  (defconst mas/fixed-pitch-font "Iosevka Type"
+  (defconst mas/fixed-pitch-font "Hack"
     "The default fixed-pitch typeface.")
+  ;; (defconst mas/fixed-pitch-font "Iosevka Type"
+  ;;   "The default fixed-pitch typeface.")
 
   (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
     "Fontconfig parameters for the fixed-pitch typeface.")
@@ -38,6 +40,10 @@
     "Set font for desktop computer"
     (mas/set-default-font mas/fixed-pitch-font 10))
 
+  (defun mas/set-font-docked ()
+    "Set font for laptop in docking station with multiple monitors"
+    (mas/set-default-font mas/fixed-pitch-font 9))
+
   (defun mas/set-font-laptop ()
     "Set font for un-docked laptop computer"
     (mas/set-default-font mas/fixed-pitch-font 11))
@@ -46,7 +52,9 @@
     "Set the initial default font. TODO - query system to determine platform."
     (interactive)
     (when (display-graphic-p)
-      (mas/set-font-desktop)))
+      (if (>= (display-pixel-width) 5760)
+          (mas/set-font-docked)
+        (mas/set-font-desktop))))
 
   :hook
   (after-init . mas/start-font)
