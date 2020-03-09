@@ -1617,9 +1617,13 @@ based on the directory of the current buffer."
 
 (use-package zenburn-theme
   :ensure t
-  :config
+  :init
   (load-theme 'zenburn t)
-  )
+  :config
+  (zenburn-with-color-variables
+    (custom-theme-set-faces
+     'zenburn
+     `(hl-line ((,class (:background ,zenburn-bg+1)) (t :weight bold))))))
 
 (use-package zygospore
   :ensure t
