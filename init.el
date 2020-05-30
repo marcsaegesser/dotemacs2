@@ -69,7 +69,7 @@
    browse-url-browser-function 'browse-url-generic
    browse-url-generic-program "google-chrome"
    c-basic-offset 4
-   create-lockfiles nil
+   create-lockfiles t
    indent-tabs-mode nil
    inhibit-startup-screen t
    inhibit-startup-echo-area-message t
@@ -317,6 +317,7 @@
 
 (use-package crux
   :ensure t
+  :disabled
   :bind (;;("C-c o" . crux-open-with)
          ;;("M-o" . crux-smart-open-line)
          ;; ("C-c n" . crux-cleanup-buffer-or-region)
@@ -967,7 +968,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package lsp-mode
   :ensure t
   :hook (scala-mode . lsp)
-  :config (setq lsp-prefer-flymake nil))
+  :config
+  (setq lsp-prefer-flymake nil)
+  (setq lsp-enable-indentation nil))
 
 (use-package lsp-treemacs
   :ensure t
@@ -983,6 +986,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t)
 
 (use-package lua-mode
+  :ensure t
   :mode "\\.lua\\'"
   :interpreter "lua")
 
@@ -1219,6 +1223,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package pointback
   :ensure t
+  :disabled  ;; Breaks swiper in emacs 27
   :config
   (global-pointback-mode))
 
@@ -1294,6 +1299,12 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :load-path "lisp/regex-tool"
   :commands regex-tool)
 
+(use-package scad-mode
+  :ensure t)
+
+(use-package scad-preview
+  :ensure t)
+
 (use-package sbt-mode
   :ensure t
   :pin melpa
@@ -1356,11 +1367,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (defun my-scala-mode-hook ()
     (setq prettify-symbols-alist scala-prettify-symbols-alist
           indent-tabs-mode nil
-          scala-indent:default-run-on-strategy scala-indent:eager-strategy)
+          scala-indent:default-run-on-strategy scala-indent:reluctant-strategy)
     (rainbow-delimiters-mode t)
     (smartparens-strict-mode t)
     (highlight-symbol-mode t)
-    (prettify-symbols-mode t)
+    ;; (prettify-symbols-mode t)
     (sp-local-pair 'scala-mode "{" nil
                    :post-handlers '(("||\n[i]" "RET")
                                     ("| " "SPC")
