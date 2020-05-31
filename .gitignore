@@ -36,3 +36,5 @@ network-security.data
 transient
 .lsp-session*
 .dap-breakpoints
+.cache
+workspace

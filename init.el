@@ -890,10 +890,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (ido-ubiquitous-mode t))
 
-;; (use-package cc-mode
-;;   :init
-;;   (unbind-key "C-c C-p" cc-mode-map)
-;;   )
+(use-package cc-mode
+  ;; :init
+  ;; (unbind-key "C-c C-p" cc-mode-map)
+  )
 
 (use-package js2-mode
   :ensure t
@@ -965,12 +965,23 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                                  '("~/Downloads/interesting-snippets")))
   (yas-global-mode 1))
 
+(use-package lsp-java
+  :ensure t
+  :config
+  (add-hook 'java-mode-hook 'lsp))
+
+;; (use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
+;;   :config (setq lsp-completion-enable-additional-text-edit nil))
+
 (use-package lsp-mode
   :ensure t
-  :hook (scala-mode . lsp)
+  :hook
+  ((lsp-mode . lsp-enable-which-key-integration)
+   (scala-mode . lsp))
   :config
   (setq lsp-prefer-flymake nil)
-  (setq lsp-enable-indentation nil))
+  (setq lsp-enable-indentation nil)
+  (setq lsp-completion-enable-additional-text-edit nil))
 
 (use-package lsp-treemacs
   :ensure t
@@ -1219,7 +1230,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ("C-c C-p" . projectile-command-map)
   :config
   (setq projectile-globally-ignored-directories (append '(".ensime" ".ensime_cache" "target" "ami-server")))
-  (projectile-global-mode))
+  (projectile-mode))
 
 (use-package pointback
   :ensure t
@@ -1574,21 +1585,18 @@ based on the directory of the current buffer."
 
 (use-package visual-regexp
   :ensure t
-  :bind (("C-c r" . vr/replace)
-         ("C-c q" . vr/query-replace)
-         ("C-c m" . vr/mc-mark))
+  :bind (("C-c v r" . vr/replace)
+         ("C-c v q" . vr/query-replace)
+         ("C-c v m" . vr/mc-mark))
   :config
   (setq vr/match-separator-use-custom-face t))
 
 (use-package wgrep
   :defer 5)
 
-;; (use-package whole-line-or-region
-;;   :ensure t
-;;   :diminish
-;;   :config
-;;   (whole-line-or-region-global-mode t)
-;;   (make-variable-buffer-local 'whole-line-or-region-mode))
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
 
 (use-package workgroups2
   :ensure t
@@ -1601,30 +1609,6 @@ based on the directory of the current buffer."
 (use-package yaml-mode
   :ensure t
   :mode "\\.ya?ml\\'")
-
-;; (use-package yasnippet
-;;   :ensure t
-;;   :after prog-mode
-;;   :defer 10
-;;   :diminish yas-minor-mode
-;;   :bind (("C-c y d"   . yas-load-directory)
-;;          ("C-c y i"   . yas-insert-snippet)
-;;          ("C-c y f"   . yas-visit-snippet-file)
-;;          ("C-c y n"   . yas-new-snippet)
-;;          ("C-c y t"   . yas-tryout-snippet)
-;;          ("C-c y l"   . yas-describe-tables)
-;;          ("C-c y g"   . yas-global-mode)
-;;          ("C-c y m"   . yas-minor-mode)
-;;          ("C-c y a"   . yas-reload-all)
-;;          ("C-c y TAB" . yas-expand)
-;;          ("C-c y x"   . yas-expand))
-;;   :bind (:map yas-keymap
-;;               ("C-i" . yas-next-field-or-maybe-expand))
-;;   :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
-;;   :config
-;;   (setq yas-snippet-dirs (append yas-snippet-dirs
-;;                                  '("~/Downloads/interesting-snippets")))
-;;   (yas-global-mode 1))
 
 (use-package zenburn-theme
   :ensure t
