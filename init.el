@@ -368,6 +368,13 @@
   :config
   (delete-selection-mode 1))
 
+(use-package diff-at-point
+  :ensure t
+  :bind (:map diff-mode-shared-map
+              ("<C-M-return>" . diff-at-point-goto-source-and-close))
+  :bind (:map prog-mode-map
+              ("<C-M-return>" . diff-at-point-open-and-goto-hunk)))
+
 (use-package dired
   :config
   (setq dired-recursive-copies 'always)
@@ -534,9 +541,13 @@
   (git-gutter:update-interval 2))
 
 (use-package git-gutter-fringe
+:ensure t
+:config
+(global-git-gutter-mode t))
+
+(use-package goto-last-change
   :ensure t
-  :config
-  (global-git-gutter-mode t))
+  :bind ("C-c C-g" . goto-last-change))
 
 (use-package groovy-mode
   :ensure t)
