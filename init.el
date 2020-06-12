@@ -346,6 +346,9 @@
          ;;("C-c s" . crux-ispell-word-then-abbrev)
          ))
 
+(use-package csharp-mode
+  :ensure t)
+
 (use-package css-mode
   :ensure t
   :mode "\\.css\\'")
