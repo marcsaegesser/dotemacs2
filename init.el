@@ -987,6 +987,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 ;; (use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
 ;;   :config (setq lsp-completion-enable-additional-text-edit nil))
 
+(use-package lsp-metals
+  :ensure t)
+
 (use-package lsp-mode
   :ensure t
   :hook
@@ -1061,6 +1064,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package moody
   :ensure t)
+
+(use-package move-text
+  :ensure t
+  :bind (("M-<up>" . move-text-up)
+         ("M-<down>" . move-text-down)))
 
 (use-package multiple-cursors
   :ensure t
