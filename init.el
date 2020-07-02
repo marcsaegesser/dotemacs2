@@ -446,49 +446,15 @@
   :config
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode)))
 
-;; (use-package eclim
-;;   :ensure t
-;;   :custom
-;;   (eclim-eclipse-dirs      (expand-file-name "~/eclipse/java-oxygen/eclipse"))
-;;   (eclim-default-workspace (expand-file-name "~/work/ami-server/modules"))
-;;   :config
-;;   (add-hook 'java-mode-hook 'eclim-mode))
-
-;; (use-package ensime
-;;   :ensure t ;; This will use the non-stable version! See http://ensime.github.io/editors/emacs/install/
-;;   :pin melpa
-;;   :preface
-;;   (defun scala-ret-handler ()
-;;     (interactive)
-;;     (reindent-then-newline-and-indent)
-;;     (scala-indent:insert-asterisk-on-multiline-comment))
-;;   :bind (
-;;          :map ensime-mode-map
-;;               ("RET" . scala-ret-handler) ;; Note to self: Why can't I use a lambda here?
-;;               ("<backtab>" . scala-indent:indent-with-reluctant-strategy)
-;;               ("C-c C-v t" . ensime-type-at-point-full-name) ;; Swap standard type-at-point bindings so that
-;;               ("C-c C-v T" . ensime-type-at-point))          ;; the easier one to type provides the full type
-;;   :config
-;;   (setq ensime-auto-generate-config t
-;;         ensime-graphical-tooltips nil
-;;         ensime-implicit-gutter-icons nil
-;;         ensime-startup-notification nil
-;;         ensime-sbt-perform-on-save "compile"
-;;         ;; Modify default faces with bold for varField and valField
-;;         ensime-sem-high-faces (nconc '((varField . (:inherit font-lock-warning-face :weight bold))
-;;                                        (valField . (:inherit font-lock-constant-face :slant italic :weight bold)))
-;;                                      ensime-sem-high-faces)
-;;         ;; ensime-server-version "2.0.0-graph-SNAPSHOT"   ;; Track development branch of the server
-;;         ;; ensime-startup-snapshot-notification nil ;; Acknowledge that we're crazy enough to use the dev branch.
-;;         )
-;;   )
-
 (use-package eterm-256color
   :ensure t
   :hook (term-mode . eterm-256color-mode))
 
 (use-package expand-region
-  :bind ("C-=" . er/expand-region))
+  :ensure t
+  :bind (("C-=" . er/expand-region)
+         ("C-," . er/contract-region)
+         ("C-." . er/expand-region)))
 
 (use-package flx-ido
   :ensure t
@@ -1358,8 +1324,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package scala-mode
   :ensure t
-  :pin melpa
   :mode "\\.s\\(cala\\|bt\\)$"
+  :bind (:map scala-mode-map
+         ("C-<up>"   . scala-syntax:beginning-of-definition)
+         ("C-<down>" . scala-syntax:end-of-definition))
   :preface
   (defvar scala-prettify-symbols-alist
     '(("<=" . ?≤)
@@ -1612,6 +1580,12 @@ based on the directory of the current buffer."
          ("C-c v m" . vr/mc-mark))
   :config
   (setq vr/match-separator-use-custom-face t))
+
+(use-package vscode-dark-plus-theme
+  :ensure t
+  ;; :config
+  ;; (load-theme 'vscode-dark-plus t)
+  )
 
 (use-package wgrep
   :defer 5)
