@@ -437,14 +437,14 @@
   (setq dired-bind-info nil)
 
   :bind (("C-x C-j" . dired-jump)
-         ("s-j" . dired-jump)
-         ("C-x 4 C-j" . dired-jump-other-window)
-         ("s-J" . dired-jump-other-window)))
+         ("C-x 4 C-j" . dired-jump-other-window)))
 
 (use-package dockerfile-mode
   :ensure t
   :config
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode)))
+
+(use-package eldoc :diminish)
 
 (use-package eterm-256color
   :ensure t
@@ -962,7 +962,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ((lsp-mode . lsp-enable-which-key-integration)
    (scala-mode . lsp))
   :config
-  (setq lsp-prefer-flymake nil)
   (setq lsp-enable-indentation nil)
   (setq lsp-completion-enable-additional-text-edit nil))
 
@@ -1592,6 +1591,7 @@ based on the directory of the current buffer."
 
 (use-package which-key
   :ensure t
+  :diminish
   :config (which-key-mode))
 
 (use-package workgroups2
