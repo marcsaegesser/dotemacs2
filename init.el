@@ -983,6 +983,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :mode "\\.lua\\'"
   :interpreter "lua")
 
+(use-package macrostep
+  :ensure t
+  :bind ("C-c e" . macrostep-expand))
+
 (use-package magit
   :ensure t
   :bind ("M-<f12>" . 'magit-status)
@@ -1124,7 +1128,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :hook (org-mode . org-bullets-mode))
 
-(use-package org-brain 
+(use-package org-brain
   :ensure t
   :after org
   :init
@@ -1614,7 +1618,8 @@ based on the directory of the current buffer."
   (zenburn-with-color-variables
     (custom-theme-set-faces
      'zenburn
-     `(hl-line ((,class (:background ,zenburn-bg+1)) (t :weight bold))))))
+     `(hl-line ((,class (:background ,zenburn-bg+1)) (t :weight bold)))
+     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+3)) (t :weight bold))))))
 
 (use-package zygospore
   :ensure t
