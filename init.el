@@ -1618,8 +1618,9 @@ based on the directory of the current buffer."
   (zenburn-with-color-variables
     (custom-theme-set-faces
      'zenburn
+     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+3)) (t :weight bold)))
      `(hl-line ((,class (:background ,zenburn-bg+1)) (t :weight bold)))
-     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+3)) (t :weight bold))))))
+     `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold))))))
 
 (use-package zygospore
   :ensure t

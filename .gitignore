@@ -38,3 +38,4 @@ transient
 .dap-breakpoints
 .cache
 workspace
+flycheck_init.el
