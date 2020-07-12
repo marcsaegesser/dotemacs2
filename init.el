@@ -1461,7 +1461,9 @@ based on the directory of the current buffer."
              sp-restrict-to-pairs-interactive
              sp-local-pair)
   :init
-  (setq sp-interactive-dwim t)
+  :bind (:map smartparens-mode-map
+              ("C-M-a" . sp-beginning-of-sexp)
+              ("C-M-e" . sp-end-of-sexp))
   ;; :bind (:map smartparens-mode-map
   ;;             ("s-{"           . sp-rewrap-sexp)
   ;;             ("s-<delete>"    . sp-kill-sexp)
@@ -1483,14 +1485,14 @@ based on the directory of the current buffer."
   :config
   (require 'smartparens-config)
   (sp-use-smartparens-bindings)
-  ;; (sp-pair "(" ")" :wrap "C-(") ;; how do people live without this?
-  ;; (sp-pair "[" "]" :wrap "s-[") ;; C-[ sends ESC
-  ;; (sp-pair "{" "}" :wrap "C-{")
-  ;; (sp-pair "<" ">" :wrap "C-<")
+  (sp-pair "(" ")" :wrap "C-c (")
+  (sp-pair "[" "]" :wrap "C-c [")
+  (sp-pair "{" "}" :wrap "C-c {")
+  (sp-pair "<" ">" :wrap "C-c <")
 
   ;; nice whitespace / indentation when creating statements
-  ;; (sp-local-pair '(c-mode java-mode) "(" nil :post-handlers '(("||\n[i]" "RET")))
-  ;; (sp-local-pair '(c-mode java-mode) "{" nil :post-handlers '(("||\n[i]" "RET")))
+  ;; (sp-local-pair '(c-mode java-mode scala-mode) "(" nil :post-handlers '(("||\n[i]" "RET")))
+  ;; (sp-local-pair '(c-mode java-mode scala-mode) "{" nil :post-handlers '(("||\n[i]" "RET")))
   ;; (sp-local-pair '(java-mode) "<" nil :post-handlers '(("||\n[i]" "RET")))
   (smartparens-global-mode t))
 
