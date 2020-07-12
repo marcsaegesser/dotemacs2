@@ -1598,14 +1598,6 @@ based on the directory of the current buffer."
   :diminish
   :config (which-key-mode))
 
-(use-package workgroups2
-  :ensure t
-  ;; :config
-  ;; (setq wg-emacs-exit-save-behavior 'save
-  ;;       wg-flag-modified t)
-  ;; ;; (workgroups-mode 0)
-  )
-
 (use-package yaml-mode
   :ensure t
   :mode "\\.ya?ml\\'")
@@ -1618,9 +1610,9 @@ based on the directory of the current buffer."
   (zenburn-with-color-variables
     (custom-theme-set-faces
      'zenburn
-     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+3)) (t :weight bold)))
-     `(hl-line ((,class (:background ,zenburn-bg+1)) (t :weight bold)))
-     `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold))))))
+     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)))
+     `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold)))
+     `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold))))))
 
 (use-package zygospore
   :ensure t
