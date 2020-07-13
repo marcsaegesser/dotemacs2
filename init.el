@@ -353,13 +353,6 @@
   :ensure t
   :mode "\\.css\\'")
 
-;; (use-package cursor-chg
-;;   :ensure t
-;;   :commands change-cursor-mode
-;;   :config
-;;   (change-cursor-mode 1)
-;;   (toggle-cursor-type-when-idle 1))
-
 (use-package default-text-scale
   :ensure t
   :diminish
@@ -1163,36 +1156,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (global-page-break-lines-mode))
 
-(use-package paredit
-  :ensure t
-  :disabled   ;; 2/24/2018 mas -- Switching to smartparens, at least for now
-  ;; :diminish
-  :hook ((lisp-mode emacs-lisp-mode) . paredit-mode)
-  :bind (:map paredit-mode-map
-              ("[")
-              ("M-k"       . paredit-raise-sexp)
-              ("M-I"       . paredit-splice-sexp)
-              ("C-M-l"     . paredit-recentre-on-sexp)
-              ("C-c ( n"   . paredit-add-to-next-list)
-              ("C-c ( p"   . paredit-add-to-previous-list)
-              ("C-c ( j"   . paredit-join-with-next-list)
-              ("C-c ( J"   . paredit-join-with-previous-list))
-  :bind (:map lisp-mode-map       ("<return>" . paredit-newline))
-  :bind (:map emacs-lisp-mode-map ("<return>" . paredit-newline))
-  :hook (paredit-mode
-         . (lambda ()
-             (unbind-key "M-r" paredit-mode-map)
-             (unbind-key "M-s" paredit-mode-map)))
-  :config
-  (require 'eldoc)
-  (eldoc-add-command 'paredit-backward-delete
-                     'paredit-close-round))
-(use-package paredit-everywhere
-  :ensure t
-  :disabled   ;; 2/24/2018 mas -- Switching to smartparens, at least for now
-  :bind (("M-[" . paredit-wrap-square))
-  :hook (prog-mode . paredit-everywhere-mode))
-
 (use-package personal
   :defer t
   :bind (([remap open-line] . sanityinc/open-line-with-reindent))
@@ -1279,7 +1242,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :commands rainbow-mode)
 
 (use-package recentf
-  :defer 10
+  :defer 2 ;;10
   :commands (recentf-mode
              recentf-add-file
              recentf-apply-filename-handlers)
@@ -1389,22 +1352,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                 scroll-conservatively 10)
   (set-scroll-bar-mode nil))
 
-;; (use-package selected
-;;   :ensure t
-;;   :defer 5
-;;   :diminish selected-minor-mode
-;;   :bind (:map selected-keymap
-;;               ("[" . align-code)
-;;               ("f" . fill-region)
-;;               ("U" . unfill-region)
-;;               ("d" . downcase-region)
-;;               ("u" . upcase-region)
-;;               ("r" . reverse-region)
-;;               ("s" . sort-lines)
-;;               ("q" . selected-off))
-;;   :config
-;;   (selected-global-mode 1))
-
 (use-package server
   :unless noninteractive
   :no-require
@@ -1436,7 +1383,7 @@ based on the directory of the current buffer."
 
 (use-package smart-mode-line
   :ensure t
-  :defer 10
+  :defer 1
   :config
   ;; See https://github.com/Malabarba/smart-mode-line/issues/217
   (setq mode-line-format (delq 'mode-line-position mode-line-format))
@@ -1544,13 +1491,6 @@ based on the directory of the current buffer."
   :custom
   (term-scroll-to-bottom-on-output 'this))
 
-;; (use-package tidy
-;;   :ensure t
-;;   :commands (tidy-buffer
-;;              tidy-parse-config-file
-;;              tidy-save-settings
-;;              tidy-describe-options))
-
 (use-package undo-tree
   :ensure t
   :diminish
@@ -1567,10 +1507,6 @@ based on the directory of the current buffer."
   (setq uniquify-separator " • ")
   (setq uniquify-after-kill-buffer-p t)
   (setq uniquify-ignore-buffers-re "^\\*"))
-
-;; (use-package vline
-;;   :ensure t
-;;   :commands vline-mode)
 
 (use-package volatile-highlights
   :ensure t
