@@ -23,10 +23,19 @@
 ;; Set up default font on startup
 (use-package emacs
   :config
+  (defun mas/config-zenburn ()
+    "Update some custom faces in the zenburn theme."
+    (interactive)
+    (zenburn-with-color-variables
+      (custom-theme-set-faces
+       'zenburn
+       `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)) t)
+       `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold)) t)
+       `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t)))
+    (custom-theme-recalc-face 'hl-line))
+
   (defconst mas/fixed-pitch-font "Iosevka Type"
     "The default fixed-pitch typeface.")
-  ;; (defconst mas/fixed-pitch-font "Iosevka Type"
-  ;;   "The default fixed-pitch typeface.")
 
   (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
     "Fontconfig parameters for the fixed-pitch typeface.")
@@ -1435,7 +1444,6 @@ based on the directory of the current buffer."
   (sp-pair "(" ")" :wrap "C-c (")
   (sp-pair "[" "]" :wrap "C-c [")
   (sp-pair "{" "}" :wrap "C-c {")
-  (sp-pair "<" ">" :wrap "C-c <")
 
   ;; nice whitespace / indentation when creating statements
   ;; (sp-local-pair '(c-mode java-mode scala-mode) "(" nil :post-handlers '(("||\n[i]" "RET")))
@@ -1542,15 +1550,13 @@ based on the directory of the current buffer."
 
 (use-package zenburn-theme
   :ensure t
-  :init
-  (load-theme 'zenburn t)
   :config
   (zenburn-with-color-variables
     (custom-theme-set-faces
      'zenburn
-     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)))
-     `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold)))
-     `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold))))))
+     `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)) t)
+     `(hl-line-face ((,class (:background ,zenburn-bg-05)) (t :weight bold)) t)
+     `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t))))
 
 (use-package zygospore
   :ensure t
@@ -1563,6 +1569,9 @@ based on the directory of the current buffer."
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
+
+(if (custom-theme-enabled-p 'zenburn)
+    (mas/config-zenburn))
 
 (provide 'init)
 ;;; init.el ends here
