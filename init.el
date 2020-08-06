@@ -78,6 +78,7 @@
    browse-url-browser-function 'browse-url-generic
    browse-url-generic-program "google-chrome"
    c-basic-offset 4
+   confirm-kill-processes nil
    create-lockfiles t
    indent-tabs-mode nil
    inhibit-startup-screen t
@@ -128,6 +129,8 @@
   (global-set-key (kbd "C-M-S-p") 'previous-multiframe-window)
 
   (global-set-key [f9] 'toggle-menu-bar-mode-from-frame)
+
+  (global-set-key (kbd "C-c C-p") 'projectile-command-map)
 
   ;; Setup greek key bindings
   (global-set-key (kbd "M-g a") "α")
@@ -206,6 +209,12 @@
 
 (use-package arjen-grey-theme
   :ensure t)
+
+(use-package auto-indent-mode
+  :ensure t
+  :disabled t
+  :config
+  (auto-indent-global-mode))
 
 (use-package avy
   :ensure t
@@ -873,8 +882,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-ubiquitous-mode t))
 
 (use-package cc-mode
-  ;; :init
-  ;; (unbind-key "C-c C-p" cc-mode-map)
+  :init
+  (unbind-key "C-c C-p" java-mode-map)
   )
 
 (use-package js2-mode
@@ -1189,8 +1198,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package projectile
   :ensure t
   :diminish
-  :bind-keymap
-  ("C-c C-p" . projectile-command-map)
+  ;; :bind-keymap   ;; Moved to global key binding - Is there a better way?
+  ;; ("C-c C-p" . projectile-command-map)
   :config
   (setq projectile-globally-ignored-directories (append '(".ensime" ".ensime_cache" "target" "ami-server")))
   (projectile-mode))
