@@ -199,10 +199,7 @@
 
 
 (use-package alect-themes
-  :ensure t
-  ;; :config
-  ;; (load-theme 'alect-dark t)
-  )
+  :ensure t)
 
 (use-package arduino-mode
   :ensure t)
@@ -1421,26 +1418,13 @@ based on the directory of the current buffer."
 (use-package smartparens
   :ensure t
   :diminish smartparens-mode
-  :commands (smartparens-strict-mode
-             smartparens-mode
-             sp-restrict-to-pairs-interactive
-             sp-local-pair)
-  :init
+  ;; :commands (smartparens-strict-mode
+  ;;            smartparens-mode
+  ;;            sp-restrict-to-pairs-interactive
+  ;;            sp-local-pair)
   :bind (:map smartparens-mode-map
               ("C-M-a" . sp-beginning-of-sexp)
               ("C-M-e" . sp-end-of-sexp))
-  ;; :bind (:map smartparens-mode-map
-  ;;             ("s-{"           . sp-rewrap-sexp)
-  ;;             ("s-<delete>"    . sp-kill-sexp)
-  ;;             ("s-<backspace>" . sp-backward-kill-sexp)
-  ;;             ("s-<home>"      . sp-beginning-of-sexp)
-  ;;             ("s-<end>"       . sp-end-of-sexp)
-  ;;             ("s-<left>"      . sp-beginning-of-previous-sexp)
-  ;;             ("s-<right>"     . sp-next-sexp)
-  ;;             ("s-<up>"        . sp-backward-up-sexp)
-  ;;             ("s-<down>"      . sp-down-sexp)
-  ;;             ("C-<left>"      . nil)
-  ;;             ("C-<right>"     . nil))
   :hook ((smartparens-mode
           . (lambda()
               (unbind-key "C-M-p" smartparens-mode-map)
@@ -1449,10 +1433,25 @@ based on the directory of the current buffer."
          ((lisp-mode emacs-lisp-mode) . smartparens-strict-mode))
   :config
   (require 'smartparens-config)
-  (sp-use-smartparens-bindings)
-  (sp-pair "(" ")" :wrap "C-c (")
-  (sp-pair "[" "]" :wrap "C-c [")
-  (sp-pair "{" "}" :wrap "C-c {")
+  (defun mas/slurp-scala-nested-types (id action context)
+    "When inserting square brackets at a type, slurp the type into brackets.
+If the type was already a nested type then slurp the rest of it inside the new brackets."
+    (cond ((eq action 'insert)
+           (save-excursion
+             (let ((sz (length (plist-get (sp-get-pair id) :close))))
+               (forward-char sz)
+               (when (or (eq (char-syntax (following-char)) ?w)
+                         (looking-at (sp--get-opening-regexp)))
+                 (backward-char sz)
+                 (sp-forward-slurp-sexp)))))
+          ((eq action 'slurp-forward)
+           (save-excursion
+             (let ((sz (length (plist-get (sp-get-pair id) :close))))
+               (when (looking-at (sp--get-opening-regexp))
+                 (backward-char sz)
+                 (sp-forward-slurp-sexp)))))))
+
+  (sp-local-pair 'scala-mode "[" "]" :wrap "C-c [" :post-handlers '(:add mas/slurp-scala-nested-types))
 
   ;; nice whitespace / indentation when creating statements
   ;; (sp-local-pair '(c-mode java-mode scala-mode) "(" nil :post-handlers '(("||\n[i]" "RET")))
@@ -1499,7 +1498,11 @@ based on the directory of the current buffer."
 (use-package switch-window
   :ensure t
   :config
-  (setq switch-window-shortcut-style 'alphabet)
+  (setq switch-window-shortcut-style 'qwerty)
+  :custom-face
+  (switch-window-label ((t (:height 7.0))))
+  :custom
+  (switch-window-background t)
   :bind
   (("C-x o" . switch-window)
    ("C-x 9" . switch-window-then-delete)))
@@ -1540,10 +1543,7 @@ based on the directory of the current buffer."
   (setq vr/match-separator-use-custom-face t))
 
 (use-package vscode-dark-plus-theme
-  :ensure t
-  ;; :config
-  ;; (load-theme 'vscode-dark-plus t)
-  )
+  :ensure t)
 
 (use-package wgrep
   :defer 5)
