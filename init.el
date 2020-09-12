@@ -5,6 +5,8 @@
 
 ;;; Code:
 (require 'package)
+;; (when (< emacs-major-version 27)
+;;   (package-initialize))
 (package-initialize)
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
@@ -34,8 +36,11 @@
        `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t)))
     (custom-theme-recalc-face 'hl-line))
 
-  (defconst mas/fixed-pitch-font "Iosevka Type"
+  (defconst mas/fixed-pitch-font "Iosevka"
     "The default fixed-pitch typeface.")
+
+  ;; (defconst mas/fixed-pitch-font "JetBrains Mono"
+  ;;   "The default fixed-pitch typeface.")
 
   (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
     "Fontconfig parameters for the fixed-pitch typeface.")
@@ -51,7 +56,7 @@
 
   (defun mas/set-font-docked ()
     "Set font for laptop in docking station with multiple monitors"
-    (mas/set-default-font mas/fixed-pitch-font 7))
+    (mas/set-default-font mas/fixed-pitch-font 8))
 
   (defun mas/set-font-laptop ()
     "Set font for un-docked laptop computer"
@@ -97,7 +102,7 @@
    use-file-dialog nil
    use-dialog-box nil
    visible-bell nil
-   window-combintaion-resize t
+   window-combination-resize t
    x-select-enable-clipboard t
    )
 
@@ -818,6 +823,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ("z" projectile-cache-current-file "cache current")
   ("q" nil "cancel"))
 
+(use-package hyperbole
+  :ensure t)
+
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
   :init
@@ -861,8 +869,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq ido-use-virtual-buffers t)
   (setq ido-default-buffer-method 'selected-window)
   :config
-  (setq ido-use-filename-at-point 'guess)
-  (setq ido-use-faces nil)
+  ;; (setq ido-use-filename-at-point 'guess)
+  ;; (setq ido-use-faces nil)
   (ido-mode t)
   (ido-everywhere t))
 
@@ -929,6 +937,34 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package labburn-theme
   :ensure t)
 
+(use-package ligature
+  :load-path "~/work/ligature.el"
+  :config
+  ;; Enable the "www" ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable common ligatures
+  (ligature-set-ligatures 'prog-mode '("=>" "<-" "+++" "!=" "<=" ">="))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  ;; (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+  ;;                                      ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+  ;;                                      "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+  ;;                                      "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+  ;;                                      "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+  ;;                                      "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+  ;;                                      "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+  ;;                                      "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+  ;;                                      ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+  ;;                                      "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+  ;;                                      "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+  ;;                                      "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+  ;;                                      "\\" "://"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  (global-ligature-mode t))
+
 (use-package yasnippet
   :ensure t
   :after prog-mode
@@ -958,9 +994,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (add-hook 'java-mode-hook 'lsp))
 
-;; (use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
-;;   :config (setq lsp-completion-enable-additional-text-edit nil))
-
 (use-package lsp-metals
   :ensure t)
 
@@ -970,8 +1003,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ((lsp-mode . lsp-enable-which-key-integration)
    (scala-mode . lsp))
   :config
-  (setq lsp-enable-indentation nil)
-  (setq lsp-completion-enable-additional-text-edit nil))
+  (setq lsp-file-watch-threshold nil
+        lsp-enable-indentation nil
+        lsp-completion-enable-additional-text-edit nil))
 
 (use-package lsp-treemacs
   :ensure t
@@ -1188,9 +1222,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package dap-mode
   :ensure t
+  :after lsp-mode
+  :config (dap-auto-configure-mode)
   :hook
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode))
+
+(use-package dap-java
+  :ensure nil)
 
 (use-package projectile
   :ensure t
@@ -1520,6 +1559,11 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package unfill
   :ensure t)
+
+;; (use-package unicode-fonts
+;;    :ensure t
+;;    :config
+;;    (unicode-fonts-setup))
 
 (use-package uniquify
   :config
