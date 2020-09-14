@@ -5,9 +5,8 @@
 
 ;;; Code:
 (require 'package)
-;; (when (< emacs-major-version 27)
-;;   (package-initialize))
-(package-initialize)
+(when (< emacs-major-version 27)
+  (package-initialize))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
@@ -368,10 +367,6 @@
 
 (use-package csharp-mode
   :ensure t)
-
-(use-package css-mode
-  :ensure t
-  :mode "\\.css\\'")
 
 (use-package default-text-scale
   :ensure t
@@ -1588,6 +1583,11 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package vscode-dark-plus-theme
   :ensure t)
+
+(use-package whole-line-or-region
+  :ensure t
+  :config
+  (whole-line-or-region-global-mode))
 
 (use-package wgrep
   :defer 5)

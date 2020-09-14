@@ -39,3 +39,4 @@ transient
 .cache
 workspace
 flycheck_init.el
+eln-cache
