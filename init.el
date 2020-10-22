@@ -69,8 +69,8 @@
           (mas/set-font-docked)
         (mas/set-font-desktop))))
 
-  :hook
-  (after-init . mas/start-font)
+  ;; :hook
+  ;; (after-init . mas/start-font)
   )
 
 ;; Preferences
@@ -79,8 +79,9 @@
   (setq-default
    auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
    blink-cursor-delay 0
-   browse-url-browser-function 'browse-url-generic
+   browse-url-browser-function 'eww-browse-url
    browse-url-generic-program "google-chrome"
+   ;; browse-url-browser-function 'browse-url-generic
    c-basic-offset 4
    confirm-kill-processes nil
    create-lockfiles t
@@ -374,6 +375,9 @@
   :config
   (default-text-scale-mode t))
 
+(use-package delight
+  :ensure t)
+
 (use-package del-sel
   :no-require
   :config
@@ -454,6 +458,15 @@
 
 (use-package eldoc :diminish)
 
+(use-package elfeed
+  :ensure t
+  :config
+  (setq elfeed-feeds
+        '(("http://nullprogram.com/feed/" blog emacs)
+          ("http://feeds.feedburner.com/CafeHayek" blog economics)
+          "http://www.50ply.com/atom.xml"  ; no autotagging
+          ("http://nedroid.com/feed/" webcomic))))
+
 (use-package eterm-256color
   :ensure t
   :hook (term-mode . eterm-256color-mode))
@@ -511,6 +524,9 @@
 (use-package foggy-night-theme
   :ensure t)
 
+(use-package font-lock-studio
+  :ensure t)
+
 (use-package git-gutter
   :ensure t
   :diminish
@@ -521,6 +537,9 @@
 :ensure t
 :config
 (global-git-gutter-mode t))
+
+(use-package go-mode
+  :ensure t)
 
 (use-package goto-last-change
   :ensure t
@@ -819,7 +838,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ("q" nil "cancel"))
 
 (use-package hyperbole
-  :ensure t)
+  :ensure t
+  :disabled)
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer)
@@ -998,7 +1018,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ((lsp-mode . lsp-enable-which-key-integration)
    (scala-mode . lsp))
   :config
-  (setq lsp-file-watch-threshold nil
+  (setq lsp-file-watch-threshold 1024
         lsp-enable-indentation nil
         lsp-completion-enable-additional-text-edit nil))
 
@@ -1067,6 +1087,58 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (setq mmm-global-mode 'buffers-with-submode-classes)
   (setq mmm-submode-decoration-level 2))
+
+(use-package modus-operandi-theme
+  :ensure t
+  :init
+  (setq modus-operandi-theme-slanted-constructs t
+           modus-operandi-theme-bold-constructs t
+           modus-operandi-theme-fringes 'subtle ; {nil,'subtle,'intense}
+           modus-operandi-theme-mode-line '3d ; {nil,'3d,'moody}
+           modus-operandi-theme-faint-syntax t
+           modus-operandi-theme-intense-hl-line nil
+           modus-operandi-theme-intense-paren-match t
+           modus-operandi-theme-no-link-underline t
+           modus-operandi-theme-prompts 'subtle ; {nil,'subtle,'intense}
+           modus-operandi-theme-completions 'moderate ; {nil,'moderate,'opinionated}
+           modus-operandi-theme-diffs nil ; {nil,'desaturated,'fg-only}
+           modus-operandi-theme-org-blocks 'greyscale ; {nil,'greyscale,'rainbow}
+           modus-operandi-theme-headings  ; Read further below in the manual for this one
+           '((1 . line)
+             (t . rainbow-line-no-bold))
+           modus-operandi-theme-variable-pitch-headings t
+           modus-operandi-theme-scale-headings t
+           modus-operandi-theme-scale-1 1.1
+           modus-operandi-theme-scale-2 1.15
+           modus-operandi-theme-scale-3 1.21
+           modus-operandi-theme-scale-4 1.27
+           modus-operandi-theme-scale-5 1.33))
+
+(use-package modus-vivendi-theme
+  :ensure t
+  :init
+  (setq modus-vivendi-theme-slanted-constructs t
+           modus-vivendi-theme-bold-constructs t
+           modus-vivendi-theme-fringes 'subtle ; {nil,'subtle,'intense}
+           modus-vivendi-theme-mode-line '3d ; {nil,'3d,'moody}
+           modus-vivendi-theme-faint-syntax t
+           modus-vivendi-theme-intense-hl-line nil
+           modus-vivendi-theme-intense-paren-match t
+           modus-vivendi-theme-no-link-underline t
+           modus-vivendi-theme-prompts 'subtle ; {nil,'subtle,'intense}
+           modus-vivendi-theme-completions 'moderate ; {nil,'moderate,'opinionated}
+           modus-vivendi-theme-diffs nil ; {nil,'desaturated,'fg-only}
+           modus-vivendi-theme-org-blocks 'greyscale ; {nil,'greyscale,'rainbow}
+           modus-vivendi-theme-headings  ; Read further below in the manual for this one
+           '((1 . line)
+             (t . rainbow-line-no-bold))
+           modus-vivendi-theme-variable-pitch-headings t
+           modus-vivendi-theme-scale-headings t
+           modus-vivendi-theme-scale-1 1.1
+           modus-vivendi-theme-scale-2 1.15
+           modus-vivendi-theme-scale-3 1.21
+           modus-vivendi-theme-scale-4 1.27
+           modus-vivendi-theme-scale-5 1.33))
 
 (use-package moody
   :ensure t)
@@ -1164,6 +1236,63 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package org-bullets
   :ensure t
   :hook (org-mode . org-bullets-mode))
+
+(use-package org-superstar
+  :ensure t
+  ;disabled
+  :after org
+  :config
+  (setq org-superstar-remove-leading-stars t)
+  (setq org-superstar-headline-bullets-list
+        '("🞛" "◉" "○" "▷"))
+  (setq org-superstar-item-bullet-alist
+        '((?+ . ?•)
+          (?* . ?➤)
+          (?- . ?–))))
+
+(use-package org-tree-slide
+  :ensure t
+  :after org
+  :commands prot/org-presentation-mode
+  :config
+  (setq org-tree-slide-breadcrumbs nil)
+  (setq org-tree-slide-header nil)
+  (setq org-tree-slide-slide-in-effect nil)
+  (setq org-tree-slide-heading-emphasis nil)
+  (setq org-tree-slide-cursor-init t)
+  (setq org-tree-slide-modeline-display nil)
+  (setq org-tree-slide-skip-done nil)
+  (setq org-tree-slide-skip-comments t)
+  (setq org-tree-slide-fold-subtrees-skipped t)
+  (setq org-tree-slide-skip-outline-level 8)
+  (setq org-tree-slide-never-touch-face t)
+  (setq org-tree-slide-activate-message
+        (propertize "Presentation mode ON" 'face 'success))
+  (setq org-tree-slide-deactivate-message
+        (propertize "Presentation mode OFF" 'face 'error))
+
+  (define-minor-mode prot/org-presentation-mode
+    "Parameters for plain text presentations with `org-mode'."
+    :init-value nil
+    :global nil
+    (if prot/org-presentation-mode
+        (progn
+          (unless (eq major-mode 'org-mode)
+            (user-error "Not in an Org buffer"))
+          (org-tree-slide-mode 1)
+          (prot/olivetti-mode 1)
+          (org-superstar-mode 1)
+          (org-indent-mode 1))
+      (org-tree-slide-mode -1)
+      (prot/olivetti-mode -1)
+      (org-superstar-mode -1)
+      (org-indent-mode -1)))
+
+  :bind (("C-c P" . prot/org-presentation-mode)
+         :map org-tree-slide-mode-map
+         ("<C-down>" . org-tree-slide-display-header-toggle)
+         ("<C-right>" . org-tree-slide-move-next-tree)
+         ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-brain
   :ensure t
@@ -1458,7 +1587,8 @@ based on the directory of the current buffer."
   ;;            sp-local-pair)
   :bind (:map smartparens-mode-map
               ("C-M-a" . sp-beginning-of-sexp)
-              ("C-M-e" . sp-end-of-sexp))
+              ("C-M-e" . sp-end-of-sexp)
+              ("C-<backspace>" . sp-backward-unwrap-sexp))
   :hook ((smartparens-mode
           . (lambda()
               (unbind-key "C-M-p" smartparens-mode-map)
@@ -1586,6 +1716,8 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package whole-line-or-region
   :ensure t
+  :diminish
+  :delight
   :config
   (whole-line-or-region-global-mode))
 
