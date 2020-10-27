@@ -1058,7 +1058,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :mode (("\\`README\\.md\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode))
-  :init (setq markdown-command "pandoc --from=markdown_github"))
+  :init (setq markdown-command "pandoc -t  html5"))
 
 (use-package markdown-preview-mode
   :ensure t
