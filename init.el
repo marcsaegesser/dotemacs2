@@ -90,6 +90,9 @@
    browse-url-generic-program "google-chrome"
    ;; browse-url-browser-function 'browse-url-generic
    c-basic-offset 4
+   comp-async-jobs-number 4 ;; not using all cores
+   comp-deferred-compilation t
+   comp-deferred-compilation-black-list '()
    confirm-kill-processes nil
    create-lockfiles t
    indent-tabs-mode nil
@@ -375,6 +378,11 @@
 
 (use-package csharp-mode
   :ensure t)
+
+(use-package css-mode
+  :ensure t
+  :disabled
+  :mode "\\.css\\'")
 
 (use-package default-text-scale
   :ensure t
