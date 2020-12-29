@@ -112,6 +112,7 @@
    use-file-dialog nil
    use-dialog-box nil
    visible-bell nil
+   warning-minimum-level :error
    window-combination-resize t
    x-select-enable-clipboard t
    )
@@ -222,6 +223,12 @@
 (use-package arjen-grey-theme
   :ensure t)
 
+(use-package auto-dim-other-buffers
+  :ensure t
+  :disabled t
+  :config
+  (auto-dim-other-buffers-mode t))
+
 (use-package auto-indent-mode
   :ensure t
   :disabled t
@@ -246,8 +253,8 @@
   :defer 5
   :commands browse-kill-ring)
 
-(use-package color-theme-sanityinc-tomorrow  :ensure t)
-(use-package color-theme-sanityinc-solarized :ensure t)
+;; (use-package color-theme-sanityinc-tomorrow  :ensure t :disabled)
+;; (use-package color-theme-sanityinc-solarized :ensure t :disabled)
 
 (use-package company
   :ensure t
@@ -552,6 +559,13 @@
 :ensure t
 :config
 (global-git-gutter-mode t))
+
+(use-package goggles
+  :ensure t
+  :demand t
+  :config
+  (goggles-mode)
+  (setq-default goggles-pulse t)) ;; set to nil to disable pulsing
 
 (use-package go-mode
   :ensure t)
@@ -1376,7 +1390,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ;; :bind-keymap   ;; Moved to global key binding - Is there a better way?
   ;; ("C-c C-p" . projectile-command-map)
   :config
-  (setq projectile-globally-ignored-directories (append '(".ensime" ".ensime_cache" "target" "ami-server")))
+  (setq
+   projectile-globally-ignored-directories (append '(".ensime" ".ensime_cache" "target" "ami-server"))
+   projectile-require-project-root t)
   (projectile-mode))
 
 (use-package pointback
@@ -1714,6 +1730,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package volatile-highlights
   :ensure t
+  :disabled
   :diminish
   :config
   (volatile-highlights-mode t))
