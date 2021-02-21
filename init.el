@@ -95,6 +95,7 @@
    comp-deferred-compilation-black-list '()
    confirm-kill-processes nil
    create-lockfiles t
+   gc-cons-threshold 20000000
    indent-tabs-mode nil
    inhibit-startup-screen t
    inhibit-startup-echo-area-message t
@@ -351,6 +352,29 @@
   (compilation-scroll-output 'first-error)
   )
 
+(use-package counsel
+  :ensure t
+  :bind
+  (("M-x"     . counsel-M-x)
+   ("C-x C-f" . counsel-find-file)
+   ("C-x b"   . counsel-switch-buffer))
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-re-builders-alist
+        '((swiper . ivy--regex-plus)
+          (t . ivy--regex-fuzzy)))
+  (setq projectile-completion-system 'ivy)
+  (ivy-mode 1))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :ensure t
+  :init (ivy-rich-mode 1))
+
 (use-package creamsody-theme
   :ensure t)
 
@@ -452,6 +476,7 @@
 (use-package all-the-icons-dired
     ;; M-x all-the-icons-install-fonts
     :ensure t
+    :diminish
     :hook (dired-mode . all-the-icons-dired-mode)
     :custom-face
     (all-the-icons-dired-dir-face ((t (:foreground "DarkGrey"))))
@@ -504,6 +529,9 @@
   :bind (("C-=" . er/expand-region)
          ("C-," . er/contract-region)
          ("C-." . er/expand-region)))
+
+(use-package flx
+  :ensure t)
 
 (use-package flx-ido
   :ensure t
@@ -915,6 +943,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                        (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package ido
+  :disabled
   :init
   (setq ido-enable-flex-matching t)
   (setq ido-use-filename-at-point nil)
@@ -923,11 +952,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq ido-default-buffer-method 'selected-window)
   :config
   ;; (setq ido-use-filename-at-point 'guess)
-  (setq ido-use-faces nil)
+  ;; (setq ido-use-faces nil)
+  ;; (setq magit-completing-read-function 'magit-ido-completing-read)
   (ido-mode t)
   (ido-everywhere t))
 
 (use-package ido-vertical-mode
+  :disabled
   :ensure t
   :init
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
@@ -935,6 +966,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-vertical-mode t))
 
 (use-package ido-completing-read+
+  :disabled
   :ensure t
   :config
   (ido-ubiquitous-mode t))
@@ -1061,7 +1093,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    (lsp-mode . lsp-lens-mode)
    (scala-mode . lsp))
   :custom
-  (lsp-completion-enable-additional-text-edit nil)
+  (lsp-headerline-breadcrumb-enable nil)
   :config
   (setq lsp-file-watch-threshold 512
         lsp-enable-indentation nil
@@ -1094,7 +1126,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :bind ("M-<f12>" . 'magit-status)
   :hook (magit-mode . hl-line-mode)
   :config
-  (setq magit-completing-read-function 'magit-ido-completing-read)
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   )
 
@@ -1680,6 +1711,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package smex
   :ensure t
+  :disabled
   :bind ("M-x" . 'smex))
 
 (use-package smooth-scroll
