@@ -69,8 +69,8 @@
           (mas/set-font-docked)
         (mas/set-font-desktop))))
 
-  ;; :hook
-  ;; (after-init . mas/start-font)
+  :hook
+  (after-init . mas/start-font)
   )
 
 ;; (when (fboundp 'native-compile-async)
@@ -200,6 +200,8 @@
   (global-set-key (kbd "M-g Y") "Ψ")
   (global-set-key (kbd "M-g W") "Ω")
 
+  (unbind-key "M-o")
+
   ;; don't show trailing whitespace in SQLi, inf-ruby etc.
   (dolist (hook '(term-mode-hook comint-mode-hook compilation-mode-hook))
     (add-hook hook
@@ -253,8 +255,8 @@
   :defer 5
   :commands browse-kill-ring)
 
-;; (use-package color-theme-sanityinc-tomorrow  :ensure t :disabled)
-;; (use-package color-theme-sanityinc-solarized :ensure t :disabled)
+(use-package color-theme-sanityinc-tomorrow  :ensure t :disabled)
+(use-package color-theme-sanityinc-solarized :ensure t :disabled)
 
 (use-package company
   :ensure t
@@ -446,10 +448,14 @@
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t)
 
-  (use-package all-the-icons-dired
+  )
+(use-package all-the-icons-dired
     ;; M-x all-the-icons-install-fonts
     :ensure t
-    :commands (all-the-icons-dired-mode)))
+    :hook (dired-mode . all-the-icons-dired-mode)
+    :custom-face
+    (all-the-icons-dired-dir-face ((t (:foreground "DarkGrey"))))
+    :commands (all-the-icons-dired-mode))
 
 (use-package dired-subtree
   :ensure t
@@ -1042,17 +1048,20 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (add-hook 'java-mode-hook 'lsp))
 
 (use-package lsp-metals
-  :ensure t)
+  :ensure t
+  ;; :config (setq lsp-metals-treeview-show-when-views-received t)
+  )
 
 (use-package lsp-mode
   :ensure t
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
+   (lsp-mode . lsp-lens-mode)
    (scala-mode . lsp))
   :custom
   (lsp-completion-enable-additional-text-edit nil)
   :config
-  (setq lsp-file-watch-threshold 1024
+  (setq lsp-file-watch-threshold 512
         lsp-enable-indentation nil
         lsp-headerline-breadcrumb-enable nil))
 
@@ -1196,6 +1205,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package multi-term
   :ensure t
+  :disabled
   :bind (("C-c t" . multi-term-next)
          ("C-c T" . multi-term))
   :init
@@ -1227,6 +1237,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
     (define-key term-pager-break-map  "\177" 'term-pager-back-page)))
 
 (use-package n4js
+  :ensure t)
+
+(use-package nhexl-mode
   :ensure t)
 
 (use-package nix-mode
@@ -1508,7 +1521,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package scala-mode
   :ensure t
   :mode "\\.s\\(cala\\|bt\\)$"
-  :bind (:map scala-mode-map
+ :interpreter ("scala" . scala-mode)
+ :bind (:map scala-mode-map
          ("C-<up>"   . scala-syntax:beginning-of-definition)
          ("C-<down>" . scala-syntax:end-of-definition))
   :preface
@@ -1736,6 +1750,10 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq uniquify-after-kill-buffer-p t)
   (setq uniquify-ignore-buffers-re "^\\*"))
 
+(use-package vterm
+  :ensure t
+  )
+
 (use-package volatile-highlights
   :ensure t
   :disabled
@@ -1768,6 +1786,25 @@ If the type was already a nested type then slurp the rest of it inside the new b
   :ensure t
   :diminish
   :config (which-key-mode))
+
+(use-package window
+  :bind
+  (("<f8>" . window-toggle-side-windows))
+  :custom
+  (display-buffer-alist
+   '(("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[hH]elp\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . -1)
+      (window-parameters . ((no-other-window . t))))
+     ("\\*grep\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 0))
+     ))
+  )
 
 (use-package yaml-mode
   :ensure t
