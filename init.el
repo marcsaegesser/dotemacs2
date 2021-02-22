@@ -245,8 +245,8 @@
 
 (use-package avy-zap
   :ensure t
-  :bind (("M-z" . avy-zap-to-char-dwim)
-         ("M-Z" . avy-zap-up-to-char-dwim)))
+  :bind (("M-Z" . avy-zap-to-char-dwim)
+         ("M-z" . avy-zap-up-to-char-dwim)))
 
 (use-package browse-kill-ring
   :ensure t
@@ -563,6 +563,7 @@
 (use-package goggles
   :ensure t
   :demand t
+  :diminish
   :config
   (goggles-mode)
   (setq-default goggles-pulse t)) ;; set to nil to disable pulsing
@@ -1035,6 +1036,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package lsp-java
   :ensure t
+  :custom
+  (lsp-java-project-import-on-first-time-startup "interactive")
   :config
   (add-hook 'java-mode-hook 'lsp))
 
@@ -1046,10 +1049,12 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (scala-mode . lsp))
+  :custom
+  (lsp-completion-enable-additional-text-edit nil)
   :config
   (setq lsp-file-watch-threshold 1024
         lsp-enable-indentation nil
-        lsp-completion-enable-additional-text-edit nil))
+        lsp-headerline-breadcrumb-enable nil))
 
 (use-package lsp-treemacs
   :ensure t
@@ -1220,6 +1225,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
   (defadvice term-process-pager (after term-process-rebind-keys activate)
     (define-key term-pager-break-map  "\177" 'term-pager-back-page)))
+
+(use-package n4js
+  :ensure t)
 
 (use-package nix-mode
   :ensure t)
