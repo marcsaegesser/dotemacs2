@@ -1255,7 +1255,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package multi-term
   :ensure t
-  :disabled
   :bind (("C-c t" . multi-term-next)
          ("C-c T" . multi-term))
   :init
@@ -1805,9 +1804,9 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq uniquify-after-kill-buffer-p t)
   (setq uniquify-ignore-buffers-re "^\\*"))
 
-(use-package vterm
-  :ensure t
-  )
+;; (use-package vterm
+;;   :ensure t
+;;   )
 
 (use-package volatile-highlights
   :ensure t
