@@ -367,6 +367,9 @@
   (setq projectile-completion-system 'ivy)
   (ivy-mode 1))
 
+(use-package counsel-tramp
+  :ensure t)
+
 (use-package all-the-icons-ivy-rich
   :ensure t
   :init (all-the-icons-ivy-rich-mode 1))
@@ -967,6 +970,20 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :config
   (ido-ubiquitous-mode t))
+
+(use-package ivy-avy
+  :ensure t)
+
+(use-package ivy-posframe
+  :ensure t
+  :config
+  (setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-display-function-fallback)
+        (complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+        (t               . ivy-posframe-display)))
+  (ivy-posframe-mode 1)
+)
 
 (use-package cc-mode
   :init
@@ -1758,6 +1775,10 @@ If the type was already a nested type then slurp the rest of it inside the new b
 (use-package term
   :custom
   (term-scroll-to-bottom-on-output 'this))
+
+(use-package treemacs
+  :ensure t
+  :bind ("C-c r" . treemacs))
 
 (use-package undo-tree
   :ensure t
