@@ -220,6 +220,18 @@
 (use-package alect-themes
   :ensure t)
 
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package amx
+  :ensure t
+  :after ivy
+  :custom
+  (amx-backend 'auto)
+  :config
+  (amx-mode 1))
+
 (use-package arduino-mode
   :ensure t)
 
@@ -369,14 +381,6 @@
 
 (use-package counsel-tramp
   :ensure t)
-
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init (all-the-icons-ivy-rich-mode 1))
-
-(use-package ivy-rich
-  :ensure t
-  :init (ivy-rich-mode 1))
 
 (use-package creamsody-theme
   :ensure t)
@@ -971,19 +975,36 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (ido-ubiquitous-mode t))
 
+(use-package ivy
+  :diminish
+  :custom
+  (ivy-wrap nil)
+  (ivy-display-style 'fancy)
+)
+
 (use-package ivy-avy
   :ensure t)
 
 (use-package ivy-posframe
   :ensure t
+  :diminish
+  :custom
+  (ivy-posframe-border-width 2)
+  (posframe-mouse-banish t)
   :config
   (setq ivy-posframe-display-functions-alist
       '((swiper          . ivy-display-function-fallback)
         (complete-symbol . ivy-posframe-display-at-point)
         (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
         (t               . ivy-posframe-display)))
-  (ivy-posframe-mode 1)
-)
+  (ivy-posframe-mode 1))
+
+(use-package ivy-rich
+  :ensure t
+  :config
+  (setcdr (assq t ivy-format-functions-alist)
+          #'ivy-format-function-line)
+  (ivy-rich-mode 1))
 
 (use-package cc-mode
   :init
