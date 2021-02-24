@@ -542,6 +542,7 @@
 
 (use-package flx-ido
   :ensure t
+  :disabled
   :after ido
   :config
   (setq flx-ido-debug t)
@@ -993,18 +994,17 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :diminish
   :custom
   (ivy-posframe-border-width 2)
-  (posframe-mouse-banish t)
   :config
   (setq ivy-posframe-display-functions-alist
       '((swiper          . ivy-display-function-fallback)
         (complete-symbol . ivy-posframe-display-at-point)
         (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
         (t               . ivy-posframe-display)))
-  (ivy-posframe-mode 1)
-)
+  (ivy-posframe-mode 1))
 
 (use-package ivy-rich
   :ensure t
+  :after ivy
   :config
   (setcdr (assq t ivy-format-functions-alist)
           #'ivy-format-function-line)
@@ -1460,10 +1460,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :hook (flymake-php-load)
   )
 
-;; Use the Debug Adapter Protocol for running tests and debugging
 (use-package posframe
-  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
-  :ensure t)
+  :ensure t
+  ;; :custom
+  ;; (posframe-mouse-banish t)
+  )
 
 (use-package dap-mode
   :ensure t
