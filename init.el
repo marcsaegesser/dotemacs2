@@ -503,6 +503,7 @@
   :ensure t
   :after ido
   :config
+  ;; (setq flx-ido-use-faces t)
   (flx-ido-mode t))
 
 (use-package flatland-theme
@@ -915,7 +916,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq ido-default-buffer-method 'selected-window)
   :config
   ;; (setq ido-use-filename-at-point 'guess)
-  ;; (setq ido-use-faces nil)
+  (setq ido-use-faces nil)
   (ido-mode t)
   (ido-everywhere t))
 
