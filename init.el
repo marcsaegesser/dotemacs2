@@ -984,6 +984,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :custom
   (ivy-wrap nil)
   (ivy-display-style 'fancy)
+  :config
+  (setq ivy--flx-cache (flx-make-filename-cache))
 )
 
 (use-package ivy-avy
