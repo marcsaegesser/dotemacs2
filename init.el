@@ -503,6 +503,7 @@
   :ensure t
   :after ido
   :config
+  (setq flx-ido-debug t)
   ;; (setq flx-ido-use-faces t)
   (flx-ido-mode t))
 
