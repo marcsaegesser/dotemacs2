@@ -424,6 +424,17 @@
   :disabled
   :mode "\\.css\\'")
 
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config (dap-auto-configure-mode)
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
+
+(use-package dap-java
+  :ensure nil)
+
 (use-package default-text-scale
   :ensure t
   :diminish
@@ -983,8 +994,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ivy-wrap nil)
   (ivy-display-style 'fancy)
   :config
-  (setq ivy--flx-cache (flx-make-filename-cache))
-)
+  ;; (setq ivy--flx-cache (flx-make-filename-cache))
+  (setq ivy-flx-cache 'file))
 
 (use-package ivy-avy
   :ensure t)
@@ -996,10 +1007,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ivy-posframe-border-width 2)
   :config
   (setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-display-function-fallback)
-        (complete-symbol . ivy-posframe-display-at-point)
-        (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
-        (t               . ivy-posframe-display)))
+        '((swiper          . ivy-display-function-fallback)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+          (t               . ivy-posframe-display)))
   (ivy-posframe-mode 1))
 
 (use-package ivy-rich
@@ -1465,17 +1476,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ;; :custom
   ;; (posframe-mouse-banish t)
   )
-
-(use-package dap-mode
-  :ensure t
-  :after lsp-mode
-  :config (dap-auto-configure-mode)
-  :hook
-  (lsp-mode . dap-mode)
-  (lsp-mode . dap-ui-mode))
-
-(use-package dap-java
-  :ensure nil)
 
 (use-package projectile
   :ensure t
