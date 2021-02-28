@@ -4,22 +4,26 @@
 ;;;   init.el (https://github.com/jwiegley/dot-emacs)
 
 ;;; Code:
-(require 'package)
-(when (< emacs-major-version 27)
-  (package-initialize))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-;; Install use-package if not already installed
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(require 'use-package)
+;; (setq straight-vc-git-default-protocol 'ssh)
+(straight-use-package 'use-package)
 
 ;; Set up default font on startup
 (use-package emacs
@@ -211,21 +215,21 @@
 
 ;; Load packages
 
-(use-package dash          :ensure t :defer)
-(use-package diminish      :ensure t :demand t)
-(use-package fringe-helper :ensure t :defer t)
-(use-package s             :ensure t :defer)
+(use-package dash          :straight t :defer)
+(use-package diminish      :straight t :demand t)
+(use-package fringe-helper :straight t :defer t)
+(use-package s             :straight t :defer)
 
 
 (use-package alect-themes
-  :ensure t)
+  :straight t)
 
 (use-package all-the-icons-ivy-rich
-  :ensure t
+  :straight t
   :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package amx
-  :ensure t
+  :straight t
   :after ivy
   :custom
   (amx-backend 'auto)
@@ -233,25 +237,25 @@
   (amx-mode 1))
 
 (use-package arduino-mode
-  :ensure t)
+  :straight t)
 
 (use-package arjen-grey-theme
-  :ensure t)
+  :straight t)
 
 (use-package auto-dim-other-buffers
-  :ensure t
+  :straight t
   :disabled t
   :config
   (auto-dim-other-buffers-mode t))
 
 (use-package auto-indent-mode
-  :ensure t
+  :straight t
   :disabled t
   :config
   (auto-indent-global-mode))
 
 (use-package avy
-  :ensure t
+  :straight t
   :init (setq avy-background t)
   :bind (("C-;" . avy-goto-subword-1)
          ("C-:" . avy-goto-word-0)
@@ -259,20 +263,20 @@
   )
 
 (use-package avy-zap
-  :ensure t
+  :straight t
   :bind (("M-Z" . avy-zap-to-char-dwim)
          ("M-z" . avy-zap-up-to-char-dwim)))
 
 (use-package browse-kill-ring
-  :ensure t
+  :straight t
   :defer 5
   :commands browse-kill-ring)
 
-(use-package color-theme-sanityinc-tomorrow  :ensure t :disabled)
-(use-package color-theme-sanityinc-solarized :ensure t :disabled)
+(use-package color-theme-sanityinc-tomorrow  :straight t :disabled)
+(use-package color-theme-sanityinc-solarized :straight t :disabled)
 
 (use-package company
-  :ensure t
+  :straight t
   :defer 5
   :diminish
   :commands (company-mode company-indent-or-complete-common)
@@ -353,7 +357,7 @@
 (setq-local company-backend '(company-elisp))
 
 (use-package company-ghc
-  :ensure t
+  :straight t
   :after (company ghc)
   :config
   (push 'company-ghc company-backends))
@@ -365,7 +369,7 @@
   )
 
 (use-package counsel
-  :ensure t
+  :straight t
   :bind
   (("M-x"     . counsel-M-x)
    ("C-x C-f" . counsel-find-file)
@@ -380,52 +384,52 @@
   (ivy-mode 1))
 
 (use-package counsel-tramp
-  :ensure t)
+  :straight t)
 
 (use-package creamsody-theme
-  :ensure t)
+  :straight t)
 
-(use-package crux
-  :ensure t
-  :disabled
-  :bind (;;("C-c o" . crux-open-with)
-         ;;("M-o" . crux-smart-open-line)
-         ;; ("C-c n" . crux-cleanup-buffer-or-region)
-         ;;("C-c f" . crux-recentf-ido-find-file)
-         ;;("C-M-z" . crux-indent-defun)
-         ;;("C-c u" . crux-view-url)
-         ;;("C-c e" . crux-eval-and-replace)
-         ;;("C-c w" . crux-swap-windows)
-         ;;("C-c D" . crux-delete-file-and-buffer)
-         ;;("C-c r" . crux-rename-buffer-and-file)
-         ("C-c t" . crux-visit-term-buffer)
-         ;;("C-c k" . crux-kill-other-buffers)
-         ;;("C-c TAB" . crux-indent-rigidly-and-copy-to-clipboard)
-         ;;("C-c I" . crux-find-user-init-file)
-         ;;("C-c S" . crux-find-shell-init-file)
-         ;;("s-r" . crux-recentf-ido-find-file)
-         ;;("s-j" . crux-top-join-line)
-         ;;("C-^" . crux-top-join-line)
-         ;;("s-k" . crux-kill-whole-line)
-         ;;("C-<backspace>" . crux-kill-line-backwards)
-         ;;("s-o" . crux-smart-open-line-above)
-         ([remap move-beginning-of-line] . crux-move-beginning-of-line)
-         ([(shift return)] . crux-smart-open-line)
-         ;;([(control shift return)] . crux-smart-open-line-above)
-         ;;([remap kill-whole-line] . crux-kill-whole-line)
-         ;;("C-c s" . crux-ispell-word-then-abbrev)
-         ))
+;; (use-package crux
+;;   :straight t
+;;   :disabled
+;;   :bind (;;("C-c o" . crux-open-with)
+;;          ;;("M-o" . crux-smart-open-line)
+;;          ;; ("C-c n" . crux-cleanup-buffer-or-region)
+;;          ;;("C-c f" . crux-recentf-ido-find-file)
+;;          ;;("C-M-z" . crux-indent-defun)
+;;          ;;("C-c u" . crux-view-url)
+;;          ;;("C-c e" . crux-eval-and-replace)
+;;          ;;("C-c w" . crux-swap-windows)
+;;          ;;("C-c D" . crux-delete-file-and-buffer)
+;;          ;;("C-c r" . crux-rename-buffer-and-file)
+;;          ("C-c t" . crux-visit-term-buffer)
+;;          ;;("C-c k" . crux-kill-other-buffers)
+;;          ;;("C-c TAB" . crux-indent-rigidly-and-copy-to-clipboard)
+;;          ;;("C-c I" . crux-find-user-init-file)
+;;          ;;("C-c S" . crux-find-shell-init-file)
+;;          ;;("s-r" . crux-recentf-ido-find-file)
+;;          ;;("s-j" . crux-top-join-line)
+;;          ;;("C-^" . crux-top-join-line)
+;;          ;;("s-k" . crux-kill-whole-line)
+;;          ;;("C-<backspace>" . crux-kill-line-backwards)
+;;          ;;("s-o" . crux-smart-open-line-above)
+;;          ([remap move-beginning-of-line] . crux-move-beginning-of-line)
+;;          ([(shift return)] . crux-smart-open-line)
+;;          ;;([(control shift return)] . crux-smart-open-line-above)
+;;          ;;([remap kill-whole-line] . crux-kill-whole-line)
+;;          ;;("C-c s" . crux-ispell-word-then-abbrev)
+;;          ))
 
 (use-package csharp-mode
-  :ensure t)
+  :straight t)
 
 (use-package css-mode
-  :ensure t
+  :straight t
   :disabled
   :mode "\\.css\\'")
 
 (use-package dap-mode
-  :ensure t
+  :straight t
   :after lsp-mode
   :config (dap-auto-configure-mode)
   :hook
@@ -433,16 +437,16 @@
   (lsp-mode . dap-ui-mode))
 
 (use-package dap-java
-  :ensure nil)
+  :straight nil)
 
 (use-package default-text-scale
-  :ensure t
+  :straight t
   :diminish
   :config
   (default-text-scale-mode t))
 
 (use-package delight
-  :ensure t)
+  :straight t)
 
 (use-package del-sel
   :no-require
@@ -450,7 +454,7 @@
   (delete-selection-mode 1))
 
 (use-package diff-at-point
-  :ensure t
+  :straight t
   :bind (:map diff-mode-shared-map
               ("<C-M-return>" . diff-at-point-goto-source-and-close))
   :bind (:map prog-mode-map
@@ -466,11 +470,11 @@
   :hook ((dired-mode . hl-line-mode)))
 
 (use-package diredfl
-  :ensure t
+  :straight t
   :hook (dired-mode . diredfl-mode))
 
 (use-package dired-sidebar
-  :ensure t
+  :straight t
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
   :commands (dired-sidebar-toggle-sidebar)
   :config
@@ -493,7 +497,7 @@
   )
 (use-package all-the-icons-dired
     ;; M-x all-the-icons-install-fonts
-    :ensure t
+    :straight t
     :diminish
     :hook (dired-mode . all-the-icons-dired-mode)
     :custom-face
@@ -501,7 +505,7 @@
     :commands (all-the-icons-dired-mode))
 
 (use-package dired-subtree
-  :ensure t
+  :straight t
   :after dired
   :config
   (setq dired-subtree-use-backgrounds nil)
@@ -523,14 +527,14 @@
          ("C-x 4 C-j" . dired-jump-other-window)))
 
 (use-package dockerfile-mode
-  :ensure t
+  :straight t
   :config
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode)))
 
 (use-package eldoc :diminish)
 
 (use-package elfeed
-  :ensure t
+  :straight t
   :config
   (setq elfeed-feeds
         '(("http://nullprogram.com/feed/" blog emacs)
@@ -539,32 +543,31 @@
           ("http://nedroid.com/feed/" webcomic))))
 
 (use-package eterm-256color
-  :ensure t
+  :straight t
   :hook (term-mode . eterm-256color-mode))
 
 (use-package expand-region
-  :ensure t
+  :straight t
   :bind (("C-=" . er/expand-region)
          ("C-," . er/contract-region)
          ("C-." . er/expand-region)))
 
 (use-package flx
-  :ensure t)
+  :straight t)
 
 (use-package flx-ido
-  :ensure t
+  :straight t
   :disabled
   :after ido
   :config
-  (setq flx-ido-debug t)
   ;; (setq flx-ido-use-faces t)
   (flx-ido-mode t))
 
 (use-package flatland-theme
-  :ensure t)
+  :straight t)
 
 (use-package flycheck
-  :ensure t
+  :straight t
   :config
   (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
@@ -576,15 +579,15 @@
   :init (global-flycheck-mode))
 
 (use-package flycheck-haskell
-  :ensure t
+  :straight t
   :after haskell-mode
   :config
   (flycheck-haskell-setup))
 
-(use-package flymake-php :ensure t)
+(use-package flymake-php :straight t)
 
 (use-package flymake-shell
-  :ensure t
+  :straight t
   :hook (sh-set-shell-hook . flymake-shell-load)
   )
 
@@ -599,24 +602,24 @@
       (flyspell-maybe-correct-transposition beg end candidates))))
 
 (use-package foggy-night-theme
-  :ensure t)
+  :straight t)
 
 (use-package font-lock-studio
-  :ensure t)
+  :straight t)
 
 (use-package git-gutter
-  :ensure t
+  :straight t
   :diminish
   :custom
   (git-gutter:update-interval 2))
 
 (use-package git-gutter-fringe
-:ensure t
+:straight t
 :config
 (global-git-gutter-mode t))
 
 (use-package goggles
-  :ensure t
+  :straight t
   :demand t
   :diminish
   :config
@@ -624,14 +627,14 @@
   (setq-default goggles-pulse t)) ;; set to nil to disable pulsing
 
 (use-package go-mode
-  :ensure t)
+  :straight t)
 
 (use-package goto-last-change
-  :ensure t
+  :straight t
   :bind ("C-c C-g" . goto-last-change))
 
 (use-package groovy-mode
-  :ensure t)
+  :straight t)
 
 (use-package grep
   :no-require
@@ -640,7 +643,7 @@
   (grep-scroll-output t))
 
 (use-package haskell-mode
-  :ensure t
+  :straight t
   :mode (("\\.hs\\(c\\|-boot\\)?\\'" . haskell-mode)
          ("\\.lhs\\'" . literate-haskell-mode)
          ("\\.cabal\\'" . haskell-cabal-mode))
@@ -748,7 +751,7 @@
                 (haskell-left-arrows . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+"))))))
 
 (use-package highlight-symbol
-  :ensure t
+  :straight t
   :diminish highlight-symbol-mode
   :commands highlight-symbol
   )
@@ -762,7 +765,7 @@
 ;;   :after hl-line)
 
 (use-package hydra
-  :ensure t
+  :straight t
   :bind (("s-f" . hydra-projectile/body)
          ("C-x t" . hydra-toggle/body)
          ("C-M-o" . hydra-window/body))
@@ -923,7 +926,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ("q" nil "cancel"))
 
 (use-package hyperbole
-  :ensure t
+  :straight t
   :disabled)
 
 (use-package ibuffer
@@ -953,7 +956,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package ibuffer-vc
-  :ensure t
+  :straight t
   :after ibuffer
   :commands ibuffer-vc-set-filter-groups-by-vc-root
   :hook (ibuffer . (lambda ()
@@ -978,7 +981,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package ido-vertical-mode
   :disabled
-  :ensure t
+  :straight t
   :init
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
   :config
@@ -986,11 +989,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package ido-completing-read+
   :disabled
-  :ensure t
+  :straight t
   :config
   (ido-ubiquitous-mode t))
 
 (use-package ivy
+  :straight (ivy :type git :host github :repo "abo-abo/swiper"
+                 :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :demand t
   :diminish
   :custom
@@ -1001,10 +1006,10 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq ivy-flx-cache 'file))
 
 (use-package ivy-avy
-  :ensure t)
+  :straight t)
 
 (use-package ivy-posframe
-  :ensure t
+  :straight t
   :diminish
   :custom
   (ivy-posframe-border-width 2)
@@ -1017,7 +1022,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ivy-posframe-mode 1))
 
 (use-package ivy-rich
-  :ensure t
+  :straight t
   :after ivy
   :config
   (setcdr (assq t ivy-format-functions-alist)
@@ -1030,7 +1035,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package js2-mode
-  :ensure t
+  :straight t
   :mode "\\.js\\'"
   :config
   (add-to-list 'flycheck-disabled-checkers #'javascript-jshint)
@@ -1038,19 +1043,19 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (flycheck-mode 1))
 
 (use-package json-mode
-  :ensure t
+  :straight t
   :mode "\\.json\\'")
 
 (use-package json-reformat
-  :ensure t
+  :straight t
   :after json-mode)
 
 (use-package json-snatcher
-  :ensure t
+  :straight t
   :after json-mode)
 
 (use-package keycast
-  :ensure t
+  :straight t
   :after moody
   :config
   (setq keycast-window-predicate 'moody-window-active-p)
@@ -1060,20 +1065,20 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (keycast-mode t))
 
 (use-package key-chord
-  :ensure t
+  :straight t
   :config
   (setq key-chord-two-keys-delay 0.05))
 
 (use-package use-package-chords
-  :ensure t
+  :straight t
   :config (key-chord-mode 1))
 
 (use-package kubernetes
-  :ensure t
+  :straight t
   :commands (kubernetes-overview))
 
 (use-package labburn-theme
-  :ensure t)
+  :straight t)
 
 (use-package ligature
   :load-path "~/work/ligature.el"
@@ -1104,7 +1109,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (global-ligature-mode t))
 
 (use-package yasnippet
-  :ensure t
+  :straight t
   :after prog-mode
   :defer 10
   :diminish yas-minor-mode
@@ -1128,19 +1133,19 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (yas-global-mode 1))
 
 (use-package lsp-java
-  :ensure t
+  :straight t
   :custom
   (lsp-java-project-import-on-first-time-startup "interactive")
   :config
   (add-hook 'java-mode-hook 'lsp))
 
 (use-package lsp-metals
-  :ensure t
+  :straight t
   ;; :config (setq lsp-metals-treeview-show-when-views-received t)
   )
 
 (use-package lsp-mode
-  :ensure t
+  :straight t
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (lsp-mode . lsp-lens-mode)
@@ -1153,29 +1158,29 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
         lsp-headerline-breadcrumb-enable nil))
 
 (use-package lsp-treemacs
-  :ensure t
+  :straight t
   ;; :config
   ;; (lsp-metals-treeview-enable t)
   ;; (setq lsp-metals-treeview-show-when-views-received t)
   :commands lsp-treemacs-errors-list)
 
 (use-package lsp-ui
-  :ensure t)
+  :straight t)
 
 (use-package company-lsp
-  :ensure t)
+  :straight t)
 
 (use-package lua-mode
-  :ensure t
+  :straight t
   :mode "\\.lua\\'"
   :interpreter "lua")
 
 (use-package macrostep
-  :ensure t
+  :straight t
   :bind ("C-c e" . macrostep-expand))
 
 (use-package magit
-  :ensure t
+  :straight t
   :bind ("M-<f12>" . 'magit-status)
   :hook (magit-mode . hl-line-mode)
   :config
@@ -1183,14 +1188,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package markdown-mode
-  :ensure t
+  :straight t
   :mode (("\\`README\\.md\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode))
   :init (setq markdown-command "pandoc -t  html5"))
 
 (use-package markdown-preview-mode
-  :ensure t
+  :straight t
   :after markdown-mode
   :config
   (setq markdown-preview-stylesheets
@@ -1198,27 +1203,27 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                       "blob/master/data/css/github.css"))))
 
 (use-package material-theme
-  :ensure t)
+  :straight t)
 
 (use-package memory-usage
-  :ensure t
+  :straight t
   :commands memory-usage)
 
 (use-package mic-paren
-  :ensure t
+  :straight t
   :defer 5
   :config
   (paren-activate))
 
 (use-package mmm-mode
-  :ensure t
+  :straight t
   :defer t
   :config
   (setq mmm-global-mode 'buffers-with-submode-classes)
   (setq mmm-submode-decoration-level 2))
 
 (use-package modus-operandi-theme
-  :ensure t
+  :straight t
   :init
   (setq modus-operandi-theme-slanted-constructs t
            modus-operandi-theme-bold-constructs t
@@ -1244,7 +1249,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            modus-operandi-theme-scale-5 1.33))
 
 (use-package modus-vivendi-theme
-  :ensure t
+  :straight t
   :init
   (setq modus-vivendi-theme-slanted-constructs t
            modus-vivendi-theme-bold-constructs t
@@ -1270,15 +1275,15 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            modus-vivendi-theme-scale-5 1.33))
 
 (use-package moody
-  :ensure t)
+  :straight t)
 
 (use-package move-text
-  :ensure t
+  :straight t
   :bind (("M-<up>" . move-text-up)
          ("M-<down>" . move-text-down)))
 
 (use-package multiple-cursors
-  :ensure t
+  :straight t
   :bind
   (("C-<"     . mc/mark-previous-like-this)
    ("C->"     . mc/mark-next-like-this)
@@ -1290,7 +1295,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    ("C-c m a" . mc/edit-beginnings-of-lines)))
 
 (use-package multi-term
-  :ensure t
+  :straight t
   :bind (("C-c t" . multi-term-next)
          ("C-c T" . multi-term))
   :init
@@ -1322,13 +1327,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
     (define-key term-pager-break-map  "\177" 'term-pager-back-page)))
 
 (use-package n4js
-  :ensure t)
+  :straight t)
 
 (use-package nhexl-mode
-  :ensure t)
+  :straight t)
 
 (use-package nix-mode
-  :ensure t)
+  :straight t)
 
 (use-package nxml-mode
   :commands nxml-mode
@@ -1369,11 +1374,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            "* %?\nEntered on %U\n  %i\n  %a"))))
 
 (use-package org-bullets
-  :ensure t
+  :straight t
   :hook (org-mode . org-bullets-mode))
 
 (use-package org-superstar
-  :ensure t
+  :straight t
   ;disabled
   :after org
   :config
@@ -1386,7 +1391,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
           (?- . ?–))))
 
 (use-package org-tree-slide
-  :ensure t
+  :straight t
   :after org
   :commands prot/org-presentation-mode
   :config
@@ -1430,7 +1435,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
          ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-brain
-  :ensure t
+  :straight t
   :after org
   :init
   (setq org-brain-path "Documents/org/brain")
@@ -1444,7 +1449,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq org-brain-title-max-length 12))
 
 (use-package origami
-  :ensure t
+  :straight t
   :commands origami-mode
   :hook (prog-mode . origami-mode)
   :bind
@@ -1459,7 +1464,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    ("C-c o R" . origami-reset)))
 
 (use-package page-break-lines
-  :ensure t
+  :straight t
   :diminish
   :config
   (global-page-break-lines-mode))
@@ -1470,19 +1475,19 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 )
 
 (use-package php-mode
-  :ensure t
+  :straight t
   :hook (flymake-php-load)
   )
 
 (use-package posframe
-  :ensure t
+  :straight t
   :demand t
   :custom
   (posframe-mouse-banish t)
   )
 
 (use-package projectile
-  :ensure t
+  :straight t
   :diminish
   ;; :bind-keymap   ;; Moved to global key binding - Is there a better way?
   ;; ("C-c C-p" . projectile-command-map)
@@ -1493,13 +1498,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (projectile-mode))
 
 (use-package pointback
-  :ensure t
+  :straight t
   :disabled  ;; Breaks swiper in emacs 27
   :config
   (global-pointback-mode))
 
 (use-package popup-imenu
-  :ensure t
+  :straight t
   :commands popup-imenu
   :bind ("M-i" . popup-imenu))
 
@@ -1536,15 +1541,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (add-hook 'python-mode-hook 'my-python-mode-hook))
 
 (use-package rainbow-blocks
-  :ensure t
-  )
+  :straight t)
 
 (use-package rainbow-delimiters
-  :ensure t
+  :straight t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
-  :ensure t
+  :straight t
   :commands rainbow-mode)
 
 (use-package recentf
@@ -1571,14 +1575,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :commands regex-tool)
 
 (use-package scad-mode
-  :ensure t)
+  :straight t)
 
 (use-package scad-preview
-  :ensure t)
+  :straight t)
 
 (use-package sbt-mode
-  :ensure t
-  :pin melpa
+  :straight t
   :commands sbt-start sbt-command
   :config
   ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
@@ -1591,11 +1594,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq sbt:program-options '("-Dsbt.supershell=false"))
   )
 
-;; (use-package sbt-mode
-;;   :pin melpa)
-
 (use-package scala-mode
-  :ensure t
+  :straight t
   :mode "\\.s\\(cala\\|bt\\)$"
  :interpreter ("scala" . scala-mode)
  :bind (:map scala-mode-map
@@ -1686,10 +1686,10 @@ based on the directory of the current buffer."
   :hook (shell-mode . ansi-color-for-comint-mode-on))
 
 (use-package slime-theme
-  :ensure t)
+  :straight t)
 
 (use-package smart-mode-line
-  :ensure t
+  :straight t
   :defer 1
   :config
   ;; See https://github.com/Malabarba/smart-mode-line/issues/217
@@ -1700,7 +1700,7 @@ based on the directory of the current buffer."
   (remove-hook 'display-time-hook 'sml/propertize-time-string))
 
 (use-package smart-mode-line-powerline-theme
-  :ensure t
+  :straight t
   :disabled t
   :after smart-mode-line
   :config
@@ -1708,7 +1708,7 @@ based on the directory of the current buffer."
 
 ;; Borrowed from Sam Halliday but I haven't been able to make this transistion work for me, yet
 (use-package smartparens
-  :ensure t
+  :straight t
   :diminish smartparens-mode
   ;; :commands (smartparens-strict-mode
   ;;            smartparens-mode
@@ -1753,19 +1753,19 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (smartparens-global-mode t))
 
 (use-package smex
-  :ensure t
+  :straight t
   :disabled
   :bind ("M-x" . 'smex))
 
 (use-package smooth-scroll
-  :ensure t
+  :straight t
   :bind
   (("C-u"   . scroll-down)
    ("C-M-n" . scroll-up-1)
    ("C-M-p" . scroll-down-1)))
 
 (use-package smooth-scrolling
-  :ensure t
+  :straight t
   :disabled
   :bind ("C-u" . scroll-down)
   :custom
@@ -1774,23 +1774,23 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (smooth-scrolling-mode 1))
 
 (use-package solarized-theme
-  :ensure t)
+  :straight t)
 
 (use-package sql-indent
-  :ensure t
+  :straight t
   :commands sqlind-minor-mode)
 
 (use-package sublime-themes
-  :ensure t)
+  :straight t)
 
 (use-package swiper
-  :ensure t
+  :straight t
   :bind
   (("C-s" . swiper)
    ("C-r" . swiper)))
 
 (use-package switch-window
-  :ensure t
+  :straight t
   :config
   (setq switch-window-shortcut-style 'qwerty)
   :custom-face
@@ -1806,23 +1806,23 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (term-scroll-to-bottom-on-output 'this))
 
 (use-package treemacs
-  :ensure t
+  :straight t
   :bind ("C-c r" . treemacs))
 
 (use-package undo-tree
-  :ensure t
+  :straight t
   :diminish
   :config
   (global-undo-tree-mode)
   (setq undo-tree-enable-undo-in-region t))
 
 (use-package unfill
-  :ensure t)
+  :straight t)
 
-;; (use-package unicode-fonts
-;;    :ensure t
-;;    :config
-;;    (unicode-fonts-setup))
+(use-package unicode-fonts
+   :straight t
+   :config
+   (unicode-fonts-setup))
 
 (use-package uniquify
   :config
@@ -1832,18 +1832,18 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq uniquify-ignore-buffers-re "^\\*"))
 
 ;; (use-package vterm
-;;   :ensure t
+;;   :straight t
 ;;   )
 
 (use-package volatile-highlights
-  :ensure t
+  :straight t
   :disabled
   :diminish
   :config
   (volatile-highlights-mode t))
 
 (use-package visual-regexp
-  :ensure t
+  :straight t
   :bind (("C-c v r" . vr/replace)
          ("C-c v q" . vr/query-replace)
          ("C-c v m" . vr/mc-mark))
@@ -1851,10 +1851,10 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq vr/match-separator-use-custom-face t))
 
 (use-package vscode-dark-plus-theme
-  :ensure t)
+  :straight t)
 
 (use-package whole-line-or-region
-  :ensure t
+  :straight t
   :diminish
   :delight
   :config
@@ -1864,7 +1864,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
   :defer 5)
 
 (use-package which-key
-  :ensure t
+  :straight t
   :diminish
   :config (which-key-mode))
 
@@ -1888,11 +1888,11 @@ If the type was already a nested type then slurp the rest of it inside the new b
   )
 
 (use-package yaml-mode
-  :ensure t
+  :straight t
   :mode "\\.ya?ml\\'")
 
 (use-package zenburn-theme
-  :ensure t
+  :straight t
   :config
   (zenburn-with-color-variables
     (custom-theme-set-faces
@@ -1902,7 +1902,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
      `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t))))
 
 (use-package zygospore
-  :ensure t
+  :straight t
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
 
