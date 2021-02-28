@@ -991,6 +991,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-ubiquitous-mode t))
 
 (use-package ivy
+  :demand t
   :diminish
   :custom
   (ivy-wrap nil)
@@ -1475,8 +1476,9 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package posframe
   :ensure t
-  ;; :custom
-  ;; (posframe-mouse-banish t)
+  :demand t
+  :custom
+  (posframe-mouse-banish t)
   )
 
 (use-package projectile
