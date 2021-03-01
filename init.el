@@ -369,6 +369,8 @@
   )
 
 (use-package counsel
+  ;; :straight (counsel :type git :host github :repo "abo-abo/swiper"
+  ;;                    :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :straight t
   :bind
   (("M-x"     . counsel-M-x)
@@ -994,16 +996,18 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-ubiquitous-mode t))
 
 (use-package ivy
-  :straight (ivy :type git :host github :repo "abo-abo/swiper"
-                 :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
+  ;; :straight (ivy :type git :host github :repo "abo-abo/swiper"
+  ;;                :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
+  :straight t
   :demand t
   :diminish
   :custom
   (ivy-wrap nil)
   (ivy-display-style 'fancy)
   :config
-  ;; (setq ivy--flx-cache (flx-make-filename-cache))
-  (setq ivy-flx-cache 'file))
+  (setq ivy--flx-cache (flx-make-filename-cache))
+  ;; (setq ivy-flx-cache 'file)
+)
 
 (use-package ivy-avy
   :straight t)
@@ -1153,7 +1157,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :custom
   (lsp-headerline-breadcrumb-enable nil)
   :config
-  (setq lsp-file-watch-threshold 512
+  (setq lsp-file-watch-threshold 1000
         lsp-enable-indentation nil
         lsp-headerline-breadcrumb-enable nil))
 
@@ -1689,10 +1693,13 @@ based on the directory of the current buffer."
   :straight t)
 
 (use-package smart-mode-line
-  :straight t
-  :defer 1
+  ;; :straight t
+  :straight (smart-mode-line :type git :host github :repo "Malabarba/smart-mode-line"
+                             :fork (:host github :repo "marcsaegesser/smart-mode-line" :branch "master"))
+  :defer 5
   :config
   ;; See https://github.com/Malabarba/smart-mode-line/issues/217
+  (setq sml/-debug t)
   (setq mode-line-format (delq 'mode-line-position mode-line-format))
   (column-number-mode t)
   (sml/setup)
@@ -1784,6 +1791,8 @@ If the type was already a nested type then slurp the rest of it inside the new b
   :straight t)
 
 (use-package swiper
+  ;; :straight (swiper :type git :host github :repo "abo-abo/swiper"
+  ;;                   :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :straight t
   :bind
   (("C-s" . swiper)
