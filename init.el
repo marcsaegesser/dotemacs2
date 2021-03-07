@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+;; (setq straight-disable-native-compile t)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -22,7 +24,6 @@
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; (setq straight-vc-git-default-protocol 'ssh)
 (straight-use-package 'use-package)
 
 ;; Set up default font on startup
@@ -74,15 +75,8 @@
         (mas/set-font-desktop))))
 
   :hook
-  (after-init . mas/start-font)
+  (emacs-startup . mas/start-font)
   )
-
-;; (when (fboundp 'native-compile-async)
-;;   (if (yes-or-no-p "async compile?")
-;;       (setq comp-async-jobs-number 4 ;; not using all cores
-;;             comp-deferred-compilation t
-;;             comp-deferred-compilation-black-list '())
-;;     (setq comp-deferred-compilation nil)))
 
 ;; Preferences
 (use-package emacs
@@ -97,8 +91,10 @@
    comp-async-jobs-number 4 ;; not using all cores
    comp-deferred-compilation t
    comp-deferred-compilation-black-list '()
+   comp-bootstrap-black-list '()
    confirm-kill-processes nil
    create-lockfiles t
+   debug-on-error nil
    gc-cons-threshold 20000000
    indent-tabs-mode nil
    inhibit-startup-screen t
@@ -119,8 +115,7 @@
    visible-bell nil
    warning-minimum-level :error
    window-combination-resize t
-   x-select-enable-clipboard t
-   )
+   x-select-enable-clipboard t)
 
   (blink-cursor-mode 0)
   (cua-mode 0)
@@ -237,7 +232,8 @@
   (amx-mode 1))
 
 (use-package arduino-mode
-  :straight t)
+  :straight t
+  :after flycheck)
 
 (use-package arjen-grey-theme
   :straight t)
@@ -391,37 +387,6 @@
 (use-package creamsody-theme
   :straight t)
 
-;; (use-package crux
-;;   :straight t
-;;   :disabled
-;;   :bind (;;("C-c o" . crux-open-with)
-;;          ;;("M-o" . crux-smart-open-line)
-;;          ;; ("C-c n" . crux-cleanup-buffer-or-region)
-;;          ;;("C-c f" . crux-recentf-ido-find-file)
-;;          ;;("C-M-z" . crux-indent-defun)
-;;          ;;("C-c u" . crux-view-url)
-;;          ;;("C-c e" . crux-eval-and-replace)
-;;          ;;("C-c w" . crux-swap-windows)
-;;          ;;("C-c D" . crux-delete-file-and-buffer)
-;;          ;;("C-c r" . crux-rename-buffer-and-file)
-;;          ("C-c t" . crux-visit-term-buffer)
-;;          ;;("C-c k" . crux-kill-other-buffers)
-;;          ;;("C-c TAB" . crux-indent-rigidly-and-copy-to-clipboard)
-;;          ;;("C-c I" . crux-find-user-init-file)
-;;          ;;("C-c S" . crux-find-shell-init-file)
-;;          ;;("s-r" . crux-recentf-ido-find-file)
-;;          ;;("s-j" . crux-top-join-line)
-;;          ;;("C-^" . crux-top-join-line)
-;;          ;;("s-k" . crux-kill-whole-line)
-;;          ;;("C-<backspace>" . crux-kill-line-backwards)
-;;          ;;("s-o" . crux-smart-open-line-above)
-;;          ([remap move-beginning-of-line] . crux-move-beginning-of-line)
-;;          ([(shift return)] . crux-smart-open-line)
-;;          ;;([(control shift return)] . crux-smart-open-line-above)
-;;          ;;([remap kill-whole-line] . crux-kill-whole-line)
-;;          ;;("C-c s" . crux-ispell-word-then-abbrev)
-;;          ))
-
 (use-package csharp-mode
   :straight t)
 
@@ -439,7 +404,8 @@
   (lsp-mode . dap-ui-mode))
 
 (use-package dap-java
-  :straight nil)
+  :straight nil
+  :after dap-mode)
 
 (use-package default-text-scale
   :straight t
@@ -532,6 +498,13 @@
   :straight t
   :config
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode)))
+
+(use-package doom-modeline
+  :straight t
+  :config
+  (setq doom-modeline-height 1)
+  (column-number-mode t)
+  (doom-modeline-mode 1))
 
 (use-package eldoc :diminish)
 
@@ -1014,6 +987,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package ivy-posframe
   :straight t
+  :disabled
   :diminish
   :custom
   (ivy-posframe-border-width 2)
@@ -1696,6 +1670,7 @@ based on the directory of the current buffer."
   ;; :straight t
   :straight (smart-mode-line :type git :host github :repo "Malabarba/smart-mode-line"
                              :fork (:host github :repo "marcsaegesser/smart-mode-line" :branch "master"))
+  :disabled
   :defer 5
   :config
   ;; See https://github.com/Malabarba/smart-mode-line/issues/217
