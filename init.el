@@ -26,58 +26,6 @@
 
 (straight-use-package 'use-package)
 
-;; Set up default font on startup
-(use-package emacs
-  :config
-  (defun mas/config-zenburn ()
-    "Update some custom faces in the zenburn theme."
-    (interactive)
-    (zenburn-with-color-variables
-      (custom-theme-set-faces
-       'zenburn
-       `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)) t)
-       `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold)) t)
-       `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t)))
-    (custom-theme-recalc-face 'hl-line))
-
-  (defconst mas/fixed-pitch-font "Iosevka"
-    "The default fixed-pitch typeface.")
-
-  ;; (defconst mas/fixed-pitch-font "JetBrains Mono"
-  ;;   "The default fixed-pitch typeface.")
-
-  (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
-    "Fontconfig parameters for the fixed-pitch typeface.")
-
-  (defun mas/set-default-font (family size)
-    "Set frame font to FAMILY at SIZE."
-    (set-frame-font
-     (concat family "-" (number-to-string size) mas/fixed-pitch-params) t t))
-
-  (defun mas/set-font-desktop ()
-    "Set font for desktop computer"
-    (mas/set-default-font mas/fixed-pitch-font 10))
-
-  (defun mas/set-font-docked ()
-    "Set font for laptop in docking station with multiple monitors"
-    (mas/set-default-font mas/fixed-pitch-font 8))
-
-  (defun mas/set-font-laptop ()
-    "Set font for un-docked laptop computer"
-    (mas/set-default-font mas/fixed-pitch-font 11))
-
-  (defun mas/start-font ()
-    "Set the initial default font. TODO - query system to determine platform."
-    (interactive)
-    (when (display-graphic-p)
-      (if (>= (display-pixel-width) 5760)
-          (mas/set-font-docked)
-        (mas/set-font-desktop))))
-
-  :hook
-  (emacs-startup . mas/start-font)
-  )
-
 ;; Preferences
 (use-package emacs
   :config
@@ -206,7 +154,54 @@
   (dolist (hook '(term-mode-hook comint-mode-hook compilation-mode-hook))
     (add-hook hook
               (lambda () (setq show-trailing-whitespace nil))))
-)
+
+  (defun mas/config-zenburn ()
+    "Update some custom faces in the zenburn theme."
+    (interactive)
+    (zenburn-with-color-variables
+      (custom-theme-set-faces
+       'zenburn
+       `(macrostep-expansion-highlight-face ((,class (:background ,zenburn-bg+2)) (t :weight bold)) t)
+       `(hl-line-face ((,class (:background ,zenburn-bg+1)) (t :weight bold)) t)
+       `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t)))
+    (custom-theme-recalc-face 'hl-line))
+
+  (defconst mas/fixed-pitch-font "Iosevka"
+    "The default fixed-pitch typeface.")
+
+  ;; (defconst mas/fixed-pitch-font "JetBrains Mono"
+  ;;   "The default fixed-pitch typeface.")
+
+  (defconst mas/fixed-pitch-params ":hintstyle=hintslight"
+    "Fontconfig parameters for the fixed-pitch typeface.")
+
+  (defun mas/set-default-font (family size)
+    "Set frame font to FAMILY at SIZE."
+    (set-frame-font
+     (concat family "-" (number-to-string size) mas/fixed-pitch-params) t t))
+
+  (defun mas/set-font-desktop ()
+    "Set font for desktop computer"
+    (mas/set-default-font mas/fixed-pitch-font 10))
+
+  (defun mas/set-font-docked ()
+    "Set font for laptop in docking station with multiple monitors"
+    (mas/set-default-font mas/fixed-pitch-font 8))
+
+  (defun mas/set-font-laptop ()
+    "Set font for un-docked laptop computer"
+    (mas/set-default-font mas/fixed-pitch-font 11))
+
+  (defun mas/start-font ()
+    "Set the initial default font. TODO - query system to determine platform."
+    (interactive)
+    (when (display-graphic-p)
+      (if (>= (display-pixel-width) 5760)
+          (mas/set-font-docked)
+        (mas/set-font-desktop))))
+
+  :hook
+  (emacs-startup . mas/start-font))
 
 ;; Load packages
 
@@ -503,6 +498,7 @@
   :straight t
   :config
   (setq doom-modeline-height 1)
+  (setq doom-modeline-buffer-encoding nil)
   (column-number-mode t)
   (doom-modeline-mode 1))
 
@@ -1034,6 +1030,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package keycast
   :straight t
+  :disabled
   :after moody
   :config
   (setq keycast-window-predicate 'moody-window-active-p)
