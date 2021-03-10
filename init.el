@@ -216,10 +216,12 @@
 
 (use-package all-the-icons-ivy-rich
   :straight t
+  :disabled
   :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package amx
   :straight t
+  :disabled
   :after ivy
   :custom
   (amx-backend 'auto)
@@ -363,6 +365,7 @@
   ;; :straight (counsel :type git :host github :repo "abo-abo/swiper"
   ;;                    :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :straight t
+  :disabled
   :bind
   (("M-x"     . counsel-M-x)
    ("C-x C-f" . counsel-find-file)
@@ -377,7 +380,8 @@
   (ivy-mode 1))
 
 (use-package counsel-tramp
-  :straight t)
+  :straight t
+  :disabled)
 
 (use-package creamsody-theme
   :straight t)
@@ -528,10 +532,9 @@
 
 (use-package flx-ido
   :straight t
-  :disabled
   :after ido
   :config
-  ;; (setq flx-ido-use-faces t)
+  (setq flx-ido-use-faces t)
   (flx-ido-mode t))
 
 (use-package flatland-theme
@@ -936,7 +939,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                        (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package ido
-  :disabled
   :init
   (setq ido-enable-flex-matching t)
   (setq ido-use-filename-at-point nil)
@@ -951,7 +953,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-everywhere t))
 
 (use-package ido-vertical-mode
-  :disabled
   :straight t
   :init
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
@@ -959,7 +960,6 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-vertical-mode t))
 
 (use-package ido-completing-read+
-  :disabled
   :straight t
   :config
   (ido-ubiquitous-mode t))
@@ -968,6 +968,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ;; :straight (ivy :type git :host github :repo "abo-abo/swiper"
   ;;                :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :straight t
+  :disabled
   :demand t
   :diminish
   :custom
@@ -979,7 +980,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 )
 
 (use-package ivy-avy
-  :straight t)
+  :straight t
+  :disabled)
 
 (use-package ivy-posframe
   :straight t
@@ -997,6 +999,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package ivy-rich
   :straight t
+  :disabled
   :after ivy
   :config
   (setcdr (assq t ivy-format-functions-alist)
