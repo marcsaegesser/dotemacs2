@@ -182,14 +182,17 @@
 
   (defun mas/set-font-desktop ()
     "Set font for desktop computer"
+    (interactive)
     (mas/set-default-font mas/fixed-pitch-font 10))
 
   (defun mas/set-font-docked ()
     "Set font for laptop in docking station with multiple monitors"
+    (interactive)
     (mas/set-default-font mas/fixed-pitch-font 8))
 
   (defun mas/set-font-laptop ()
     "Set font for un-docked laptop computer"
+    (interactive)
     (mas/set-default-font mas/fixed-pitch-font 11))
 
   (defun mas/start-font ()
@@ -1736,7 +1739,6 @@ If the type was already a nested type then slurp the rest of it inside the new b
 
 (use-package smex
   :straight t
-  :disabled
   :bind ("M-x" . 'smex))
 
 (use-package smooth-scroll
