@@ -4,27 +4,39 @@
 ;;;   init.el (https://github.com/jwiegley/dot-emacs)
 
 ;;; Code:
+(require 'package)
+(when (< emacs-major-version 27)
+  (package-initialize))
 
 ;; (setq straight-disable-native-compile t)
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;; (defvar bootstrap-version)
+;; (let ((bootstrap-file
+;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+;;       (bootstrap-version 5))
+;;   (unless (file-exists-p bootstrap-file)
+;;     (with-current-buffer
+;;         (url-retrieve-synchronously
+;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;          'silent 'inhibit-cookies)
+;;       (goto-char (point-max))
+;;       (eval-print-last-sexp)))
+;;   (load bootstrap-file nil 'nomessage))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(straight-use-package 'use-package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; Install use-package if not already installed
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+
+;; (straight-use-package 'use-package)
 
 ;; Preferences
 (use-package emacs
@@ -208,22 +220,22 @@
 
 ;; Load packages
 
-(use-package dash          :straight t :defer)
-(use-package diminish      :straight t :demand t)
-(use-package fringe-helper :straight t :defer t)
-(use-package s             :straight t :defer)
+(use-package dash          :ensure t :defer)
+(use-package diminish      :ensure t :demand t)
+(use-package fringe-helper :ensure t :defer t)
+(use-package s             :ensure t :defer)
 
 
 (use-package alect-themes
-  :straight t)
+  :ensure t)
 
 (use-package all-the-icons-ivy-rich
-  :straight t
+  :ensure t
   :disabled
   :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package amx
-  :straight t
+  :ensure t
   :disabled
   :after ivy
   :custom
@@ -232,26 +244,26 @@
   (amx-mode 1))
 
 (use-package arduino-mode
-  :straight t
+  :ensure t
   :after flycheck)
 
 (use-package arjen-grey-theme
-  :straight t)
+  :ensure t)
 
 (use-package auto-dim-other-buffers
-  :straight t
+  :ensure t
   :disabled t
   :config
   (auto-dim-other-buffers-mode t))
 
 (use-package auto-indent-mode
-  :straight t
+  :ensure t
   :disabled t
   :config
   (auto-indent-global-mode))
 
 (use-package avy
-  :straight t
+  :ensure t
   :init (setq avy-background t)
   :bind (("C-;" . avy-goto-subword-1)
          ("C-:" . avy-goto-word-0)
@@ -259,20 +271,20 @@
   )
 
 (use-package avy-zap
-  :straight t
+  :ensure t
   :bind (("M-Z" . avy-zap-to-char-dwim)
          ("M-z" . avy-zap-up-to-char-dwim)))
 
 (use-package browse-kill-ring
-  :straight t
+  :ensure t
   :defer 5
   :commands browse-kill-ring)
 
-(use-package color-theme-sanityinc-tomorrow  :straight t :disabled)
-(use-package color-theme-sanityinc-solarized :straight t :disabled)
+(use-package color-theme-sanityinc-tomorrow  :ensure t :disabled)
+(use-package color-theme-sanityinc-solarized :ensure t :disabled)
 
 (use-package company
-  :straight t
+  :ensure t
   :defer 5
   :diminish
   :commands (company-mode company-indent-or-complete-common)
@@ -353,7 +365,7 @@
 (setq-local company-backend '(company-elisp))
 
 (use-package company-ghc
-  :straight t
+  :ensure t
   :after (company ghc)
   :config
   (push 'company-ghc company-backends))
@@ -365,9 +377,9 @@
   )
 
 (use-package counsel
-  ;; :straight (counsel :type git :host github :repo "abo-abo/swiper"
+  ;; :ensure (counsel :type git :host github :repo "abo-abo/swiper"
   ;;                    :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
-  :straight t
+  :ensure t
   :disabled
   :bind
   (("M-x"     . counsel-M-x)
@@ -383,22 +395,22 @@
   (ivy-mode 1))
 
 (use-package counsel-tramp
-  :straight t
+  :ensure t
   :disabled)
 
 (use-package creamsody-theme
-  :straight t)
+  :ensure t)
 
 (use-package csharp-mode
-  :straight t)
+  :ensure t)
 
 (use-package css-mode
-  :straight t
+  :ensure t
   :disabled
   :mode "\\.css\\'")
 
 (use-package dap-mode
-  :straight t
+  :ensure t
   :after lsp-mode
   :config (dap-auto-configure-mode)
   :hook
@@ -406,17 +418,17 @@
   (lsp-mode . dap-ui-mode))
 
 (use-package dap-java
-  :straight nil
+  :ensure nil
   :after dap-mode)
 
 (use-package default-text-scale
-  :straight t
+  :ensure t
   :diminish
   :config
   (default-text-scale-mode t))
 
 (use-package delight
-  :straight t)
+  :ensure t)
 
 (use-package del-sel
   :no-require
@@ -424,7 +436,7 @@
   (delete-selection-mode 1))
 
 (use-package diff-at-point
-  :straight t
+  :ensure t
   :bind (:map diff-mode-shared-map
               ("<C-M-return>" . diff-at-point-goto-source-and-close))
   :bind (:map prog-mode-map
@@ -440,11 +452,11 @@
   :hook ((dired-mode . hl-line-mode)))
 
 (use-package diredfl
-  :straight t
+  :ensure t
   :hook (dired-mode . diredfl-mode))
 
 (use-package dired-sidebar
-  :straight t
+  :ensure t
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
   :commands (dired-sidebar-toggle-sidebar)
   :config
@@ -467,7 +479,7 @@
   )
 (use-package all-the-icons-dired
     ;; M-x all-the-icons-install-fonts
-    :straight t
+    :ensure t
     :diminish
     :hook (dired-mode . all-the-icons-dired-mode)
     :custom-face
@@ -475,7 +487,7 @@
     :commands (all-the-icons-dired-mode))
 
 (use-package dired-subtree
-  :straight t
+  :ensure t
   :after dired
   :config
   (setq dired-subtree-use-backgrounds nil)
@@ -497,12 +509,12 @@
          ("C-x 4 C-j" . dired-jump-other-window)))
 
 (use-package dockerfile-mode
-  :straight t
+  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode)))
 
 (use-package doom-modeline
-  :straight t
+  :ensure t
   :config
   (setq doom-modeline-height 1)
   (setq doom-modeline-buffer-encoding nil)
@@ -512,7 +524,7 @@
 (use-package eldoc :diminish)
 
 (use-package elfeed
-  :straight t
+  :ensure t
   :config
   (setq elfeed-feeds
         '(("http://nullprogram.com/feed/" blog emacs)
@@ -521,30 +533,30 @@
           ("http://nedroid.com/feed/" webcomic))))
 
 (use-package eterm-256color
-  :straight t
+  :ensure t
   :hook (term-mode . eterm-256color-mode))
 
 (use-package expand-region
-  :straight t
+  :ensure t
   :bind (("C-=" . er/expand-region)
          ("C-," . er/contract-region)
          ("C-." . er/expand-region)))
 
 (use-package flx
-  :straight t)
+  :ensure t)
 
 (use-package flx-ido
-  :straight t
+  :ensure t
   :after ido
   :config
   (setq flx-ido-use-faces t)
   (flx-ido-mode t))
 
 (use-package flatland-theme
-  :straight t)
+  :ensure t)
 
 (use-package flycheck
-  :straight t
+  :ensure t
   :config
   (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
@@ -556,15 +568,15 @@
   :init (global-flycheck-mode))
 
 (use-package flycheck-haskell
-  :straight t
+  :ensure t
   :after haskell-mode
   :config
   (flycheck-haskell-setup))
 
-(use-package flymake-php :straight t)
+(use-package flymake-php :ensure t)
 
 (use-package flymake-shell
-  :straight t
+  :ensure t
   :hook (sh-set-shell-hook . flymake-shell-load)
   )
 
@@ -579,24 +591,24 @@
       (flyspell-maybe-correct-transposition beg end candidates))))
 
 (use-package foggy-night-theme
-  :straight t)
+  :ensure t)
 
 (use-package font-lock-studio
-  :straight t)
+  :ensure t)
 
 (use-package git-gutter
-  :straight t
+  :ensure t
   :diminish
   :custom
   (git-gutter:update-interval 2))
 
 (use-package git-gutter-fringe
-:straight t
+:ensure t
 :config
 (global-git-gutter-mode t))
 
 (use-package goggles
-  :straight t
+  :ensure t
   :demand t
   :diminish
   :config
@@ -604,14 +616,14 @@
   (setq-default goggles-pulse t)) ;; set to nil to disable pulsing
 
 (use-package go-mode
-  :straight t)
+  :ensure t)
 
 (use-package goto-last-change
-  :straight t
+  :ensure t
   :bind ("C-c C-g" . goto-last-change))
 
 (use-package groovy-mode
-  :straight t)
+  :ensure t)
 
 (use-package grep
   :no-require
@@ -620,7 +632,7 @@
   (grep-scroll-output t))
 
 (use-package haskell-mode
-  :straight t
+  :ensure t
   :mode (("\\.hs\\(c\\|-boot\\)?\\'" . haskell-mode)
          ("\\.lhs\\'" . literate-haskell-mode)
          ("\\.cabal\\'" . haskell-cabal-mode))
@@ -728,7 +740,7 @@
                 (haskell-left-arrows . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+"))))))
 
 (use-package highlight-symbol
-  :straight t
+  :ensure t
   :diminish highlight-symbol-mode
   :commands highlight-symbol
   )
@@ -742,7 +754,7 @@
 ;;   :after hl-line)
 
 (use-package hydra
-  :straight t
+  :ensure t
   :bind (("s-f" . hydra-projectile/body)
          ("C-x t" . hydra-toggle/body)
          ("C-M-o" . hydra-window/body))
@@ -903,7 +915,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   ("q" nil "cancel"))
 
 (use-package hyperbole
-  :straight t
+  :ensure t
   :disabled)
 
 (use-package ibuffer
@@ -933,7 +945,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package ibuffer-vc
-  :straight t
+  :ensure t
   :after ibuffer
   :commands ibuffer-vc-set-filter-groups-by-vc-root
   :hook (ibuffer . (lambda ()
@@ -956,21 +968,21 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ido-everywhere t))
 
 (use-package ido-vertical-mode
-  :straight t
+  :ensure t
   :init
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
   :config
   (ido-vertical-mode t))
 
 (use-package ido-completing-read+
-  :straight t
+  :ensure t
   :config
   (ido-ubiquitous-mode t))
 
 (use-package ivy
-  ;; :straight (ivy :type git :host github :repo "abo-abo/swiper"
+  ;; :ensure (ivy :type git :host github :repo "abo-abo/swiper"
   ;;                :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
-  :straight t
+  :ensure t
   :disabled
   :demand t
   :diminish
@@ -983,11 +995,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 )
 
 (use-package ivy-avy
-  :straight t
+  :ensure t
   :disabled)
 
 (use-package ivy-posframe
-  :straight t
+  :ensure t
   :disabled
   :diminish
   :custom
@@ -1001,7 +1013,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (ivy-posframe-mode 1))
 
 (use-package ivy-rich
-  :straight t
+  :ensure t
   :disabled
   :after ivy
   :config
@@ -1015,7 +1027,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package js2-mode
-  :straight t
+  :ensure t
   :mode "\\.js\\'"
   :config
   (add-to-list 'flycheck-disabled-checkers #'javascript-jshint)
@@ -1023,19 +1035,19 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (flycheck-mode 1))
 
 (use-package json-mode
-  :straight t
+  :ensure t
   :mode "\\.json\\'")
 
 (use-package json-reformat
-  :straight t
+  :ensure t
   :after json-mode)
 
 (use-package json-snatcher
-  :straight t
+  :ensure t
   :after json-mode)
 
 (use-package keycast
-  :straight t
+  :ensure t
   :disabled
   :after moody
   :config
@@ -1046,20 +1058,20 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (keycast-mode t))
 
 (use-package key-chord
-  :straight t
+  :ensure t
   :config
   (setq key-chord-two-keys-delay 0.05))
 
 (use-package use-package-chords
-  :straight t
+  :ensure t
   :config (key-chord-mode 1))
 
 (use-package kubernetes
-  :straight t
+  :ensure t
   :commands (kubernetes-overview))
 
 (use-package labburn-theme
-  :straight t)
+  :ensure t)
 
 (use-package ligature
   :load-path "~/work/ligature.el"
@@ -1090,7 +1102,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (global-ligature-mode t))
 
 (use-package yasnippet
-  :straight t
+  :ensure t
   :after prog-mode
   :defer 10
   :diminish yas-minor-mode
@@ -1114,19 +1126,19 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (yas-global-mode 1))
 
 (use-package lsp-java
-  :straight t
+  :ensure t
   :custom
   (lsp-java-project-import-on-first-time-startup "interactive")
   :config
   (add-hook 'java-mode-hook 'lsp))
 
 (use-package lsp-metals
-  :straight t
+  :ensure t
   ;; :config (setq lsp-metals-treeview-show-when-views-received t)
   )
 
 (use-package lsp-mode
-  :straight t
+  :ensure t
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (lsp-mode . lsp-lens-mode)
@@ -1139,29 +1151,29 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
         lsp-headerline-breadcrumb-enable nil))
 
 (use-package lsp-treemacs
-  :straight t
+  :ensure t
   ;; :config
   ;; (lsp-metals-treeview-enable t)
   ;; (setq lsp-metals-treeview-show-when-views-received t)
   :commands lsp-treemacs-errors-list)
 
 (use-package lsp-ui
-  :straight t)
+  :ensure t)
 
 (use-package company-lsp
-  :straight t)
+  :ensure t)
 
 (use-package lua-mode
-  :straight t
+  :ensure t
   :mode "\\.lua\\'"
   :interpreter "lua")
 
 (use-package macrostep
-  :straight t
+  :ensure t
   :bind ("C-c e" . macrostep-expand))
 
 (use-package magit
-  :straight t
+  :ensure t
   :bind ("M-<f12>" . 'magit-status)
   :hook (magit-mode . hl-line-mode)
   :config
@@ -1169,14 +1181,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package markdown-mode
-  :straight t
+  :ensure t
   :mode (("\\`README\\.md\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode))
   :init (setq markdown-command "pandoc -t  html5"))
 
 (use-package markdown-preview-mode
-  :straight t
+  :ensure t
   :after markdown-mode
   :config
   (setq markdown-preview-stylesheets
@@ -1184,27 +1196,27 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
                       "blob/master/data/css/github.css"))))
 
 (use-package material-theme
-  :straight t)
+  :ensure t)
 
 (use-package memory-usage
-  :straight t
+  :ensure t
   :commands memory-usage)
 
 (use-package mic-paren
-  :straight t
+  :ensure t
   :defer 5
   :config
   (paren-activate))
 
 (use-package mmm-mode
-  :straight t
+  :ensure t
   :defer t
   :config
   (setq mmm-global-mode 'buffers-with-submode-classes)
   (setq mmm-submode-decoration-level 2))
 
 (use-package modus-operandi-theme
-  :straight t
+  :ensure t
   :init
   (setq modus-operandi-theme-slanted-constructs t
            modus-operandi-theme-bold-constructs t
@@ -1230,7 +1242,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            modus-operandi-theme-scale-5 1.33))
 
 (use-package modus-vivendi-theme
-  :straight t
+  :ensure t
   :init
   (setq modus-vivendi-theme-slanted-constructs t
            modus-vivendi-theme-bold-constructs t
@@ -1256,15 +1268,15 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            modus-vivendi-theme-scale-5 1.33))
 
 (use-package moody
-  :straight t)
+  :ensure t)
 
 (use-package move-text
-  :straight t
+  :ensure t
   :bind (("M-<up>" . move-text-up)
          ("M-<down>" . move-text-down)))
 
 (use-package multiple-cursors
-  :straight t
+  :ensure t
   :bind
   (("C-<"     . mc/mark-previous-like-this)
    ("C->"     . mc/mark-next-like-this)
@@ -1276,7 +1288,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    ("C-c m a" . mc/edit-beginnings-of-lines)))
 
 (use-package multi-term
-  :straight t
+  :ensure t
   :bind (("C-c t" . multi-term-next)
          ("C-c T" . multi-term))
   :init
@@ -1308,13 +1320,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
     (define-key term-pager-break-map  "\177" 'term-pager-back-page)))
 
 (use-package n4js
-  :straight t)
+  :ensure t)
 
 (use-package nhexl-mode
-  :straight t)
+  :ensure t)
 
 (use-package nix-mode
-  :straight t)
+  :ensure t)
 
 (use-package nxml-mode
   :commands nxml-mode
@@ -1355,11 +1367,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
            "* %?\nEntered on %U\n  %i\n  %a"))))
 
 (use-package org-bullets
-  :straight t
+  :ensure t
   :hook (org-mode . org-bullets-mode))
 
 (use-package org-superstar
-  :straight t
+  :ensure t
   ;disabled
   :after org
   :config
@@ -1372,7 +1384,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
           (?- . ?–))))
 
 (use-package org-tree-slide
-  :straight t
+  :ensure t
   :after org
   :commands prot/org-presentation-mode
   :config
@@ -1416,7 +1428,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
          ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-brain
-  :straight t
+  :ensure t
   :after org
   :init
   (setq org-brain-path "Documents/org/brain")
@@ -1430,7 +1442,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (setq org-brain-title-max-length 12))
 
 (use-package origami
-  :straight t
+  :ensure t
   :commands origami-mode
   :hook (prog-mode . origami-mode)
   :bind
@@ -1445,7 +1457,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    ("C-c o R" . origami-reset)))
 
 (use-package page-break-lines
-  :straight t
+  :ensure t
   :diminish
   :config
   (global-page-break-lines-mode))
@@ -1456,36 +1468,36 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 )
 
 (use-package php-mode
-  :straight t
+  :ensure t
   :hook (flymake-php-load)
   )
 
 (use-package posframe
-  :straight t
+  :ensure t
   :demand t
   :custom
   (posframe-mouse-banish t)
   )
 
 (use-package projectile
-  :straight t
+  :ensure t
   :diminish
   ;; :bind-keymap   ;; Moved to global key binding - Is there a better way?
   ;; ("C-c C-p" . projectile-command-map)
   :config
   (setq
    projectile-globally-ignored-directories (append '(".ensime" ".ensime_cache" "target" "ami-server"))
-   projectile-require-project-root t)
+   projectile-require-project-root 'prompt)
   (projectile-mode))
 
 (use-package pointback
-  :straight t
+  :ensure t
   :disabled  ;; Breaks swiper in emacs 27
   :config
   (global-pointback-mode))
 
 (use-package popup-imenu
-  :straight t
+  :ensure t
   :commands popup-imenu
   :bind ("M-i" . popup-imenu))
 
@@ -1522,14 +1534,14 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   (add-hook 'python-mode-hook 'my-python-mode-hook))
 
 (use-package rainbow-blocks
-  :straight t)
+  :ensure t)
 
 (use-package rainbow-delimiters
-  :straight t
+  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
-  :straight t
+  :ensure t
   :commands rainbow-mode)
 
 (use-package recentf
@@ -1556,13 +1568,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :commands regex-tool)
 
 (use-package scad-mode
-  :straight t)
+  :ensure t)
 
 (use-package scad-preview
-  :straight t)
+  :ensure t)
 
 (use-package sbt-mode
-  :straight t
+  :ensure t
   :commands sbt-start sbt-command
   :config
   ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
@@ -1576,7 +1588,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   )
 
 (use-package scala-mode
-  :straight t
+  :ensure t
   :mode "\\.s\\(cala\\|bt\\)$"
  :interpreter ("scala" . scala-mode)
  :bind (:map scala-mode-map
@@ -1667,12 +1679,12 @@ based on the directory of the current buffer."
   :hook (shell-mode . ansi-color-for-comint-mode-on))
 
 (use-package slime-theme
-  :straight t)
+  :ensure t)
 
 (use-package smart-mode-line
-  ;; :straight t
-  :straight (smart-mode-line :type git :host github :repo "Malabarba/smart-mode-line"
-                             :fork (:host github :repo "marcsaegesser/smart-mode-line" :branch "master"))
+  :ensure t
+  ;; :straight (smart-mode-line :type git :host github :repo "Malabarba/smart-mode-line"
+  ;;                            :fork (:host github :repo "marcsaegesser/smart-mode-line" :branch "master"))
   :disabled
   :defer 5
   :config
@@ -1685,7 +1697,7 @@ based on the directory of the current buffer."
   (remove-hook 'display-time-hook 'sml/propertize-time-string))
 
 (use-package smart-mode-line-powerline-theme
-  :straight t
+  :ensure t
   :disabled t
   :after smart-mode-line
   :config
@@ -1693,7 +1705,7 @@ based on the directory of the current buffer."
 
 ;; Borrowed from Sam Halliday but I haven't been able to make this transistion work for me, yet
 (use-package smartparens
-  :straight t
+  :ensure t
   :diminish smartparens-mode
   ;; :commands (smartparens-strict-mode
   ;;            smartparens-mode
@@ -1738,18 +1750,18 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (smartparens-global-mode t))
 
 (use-package smex
-  :straight t
+  :ensure t
   :bind ("M-x" . 'smex))
 
 (use-package smooth-scroll
-  :straight t
+  :ensure t
   :bind
   (("C-u"   . scroll-down)
    ("C-M-n" . scroll-up-1)
    ("C-M-p" . scroll-down-1)))
 
 (use-package smooth-scrolling
-  :straight t
+  :ensure t
   :disabled
   :bind ("C-u" . scroll-down)
   :custom
@@ -1758,25 +1770,25 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (smooth-scrolling-mode 1))
 
 (use-package solarized-theme
-  :straight t)
+  :ensure t)
 
 (use-package sql-indent
-  :straight t
+  :ensure t
   :commands sqlind-minor-mode)
 
 (use-package sublime-themes
-  :straight t)
+  :ensure t)
 
 (use-package swiper
   ;; :straight (swiper :type git :host github :repo "abo-abo/swiper"
   ;;                   :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
-  :straight t
+  :ensure t
   :bind
   (("C-s" . swiper)
    ("C-r" . swiper)))
 
 (use-package switch-window
-  :straight t
+  :ensure t
   :config
   (setq switch-window-shortcut-style 'qwerty)
   :custom-face
@@ -1792,21 +1804,21 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (term-scroll-to-bottom-on-output 'this))
 
 (use-package treemacs
-  :straight t
+  :ensure t
   :bind ("C-c r" . treemacs))
 
 (use-package undo-tree
-  :straight t
+  :ensure t
   :diminish
   :config
   (global-undo-tree-mode)
   (setq undo-tree-enable-undo-in-region t))
 
 (use-package unfill
-  :straight t)
+  :ensure t)
 
 (use-package unicode-fonts
-   :straight t
+   :ensure t
    :config
    (unicode-fonts-setup))
 
@@ -1818,18 +1830,18 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq uniquify-ignore-buffers-re "^\\*"))
 
 ;; (use-package vterm
-;;   :straight t
+;;   :ensure t
 ;;   )
 
 (use-package volatile-highlights
-  :straight t
+  :ensure t
   :disabled
   :diminish
   :config
   (volatile-highlights-mode t))
 
 (use-package visual-regexp
-  :straight t
+  :ensure t
   :bind (("C-c v r" . vr/replace)
          ("C-c v q" . vr/query-replace)
          ("C-c v m" . vr/mc-mark))
@@ -1837,10 +1849,10 @@ If the type was already a nested type then slurp the rest of it inside the new b
   (setq vr/match-separator-use-custom-face t))
 
 (use-package vscode-dark-plus-theme
-  :straight t)
+  :ensure t)
 
 (use-package whole-line-or-region
-  :straight t
+  :ensure t
   :diminish
   :delight
   :config
@@ -1850,7 +1862,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
   :defer 5)
 
 (use-package which-key
-  :straight t
+  :ensure t
   :diminish
   :config (which-key-mode))
 
@@ -1874,11 +1886,11 @@ If the type was already a nested type then slurp the rest of it inside the new b
   )
 
 (use-package yaml-mode
-  :straight t
+  :ensure t
   :mode "\\.ya?ml\\'")
 
 (use-package zenburn-theme
-  :straight t
+  :ensure t
   :config
   (zenburn-with-color-variables
     (custom-theme-set-faces
@@ -1888,7 +1900,7 @@ If the type was already a nested type then slurp the rest of it inside the new b
      `(hl-line ((,class (:background ,zenburn-bg+1 : extend t)) (t :weight bold)) t))))
 
 (use-package zygospore
-  :straight t
+  :ensure t
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
 
