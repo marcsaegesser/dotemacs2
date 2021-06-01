@@ -364,11 +364,11 @@
 
 (setq-local company-backend '(company-elisp))
 
-(use-package company-ghc
-  :ensure t
-  :after (company ghc)
-  :config
-  (push 'company-ghc company-backends))
+;; (use-package company-ghc
+;;   :ensure t
+;;   :after (company ghc)
+;;   :config
+;; (push 'company-ghc company-backends))
 
 (use-package compile
   :no-require
@@ -1160,8 +1160,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 (use-package lsp-ui
   :ensure t)
 
-(use-package company-lsp
-  :ensure t)
+;; (use-package company-lsp
+;;   :ensure t)
 
 (use-package lua-mode
   :ensure t
