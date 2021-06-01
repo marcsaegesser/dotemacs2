@@ -8,21 +8,6 @@
 (when (< emacs-major-version 27)
   (package-initialize))
 
-;; (setq straight-disable-native-compile t)
-
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-;;       (bootstrap-version 5))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;         (url-retrieve-synchronously
-;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-;;          'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
-
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -35,8 +20,6 @@
   (package-install 'use-package))
 
 (require 'use-package)
-
-;; (straight-use-package 'use-package)
 
 ;; Preferences
 (use-package emacs
@@ -1683,8 +1666,6 @@ based on the directory of the current buffer."
 
 (use-package smart-mode-line
   :ensure t
-  ;; :straight (smart-mode-line :type git :host github :repo "Malabarba/smart-mode-line"
-  ;;                            :fork (:host github :repo "marcsaegesser/smart-mode-line" :branch "master"))
   :disabled
   :defer 5
   :config
@@ -1780,8 +1761,6 @@ If the type was already a nested type then slurp the rest of it inside the new b
   :ensure t)
 
 (use-package swiper
-  ;; :straight (swiper :type git :host github :repo "abo-abo/swiper"
-  ;;                   :fork (:host github :repo "basil-conto/swiper" :branch "blc/flx"))
   :ensure t
   :bind
   (("C-s" . swiper)
