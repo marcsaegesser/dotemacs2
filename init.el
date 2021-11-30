@@ -199,7 +199,7 @@
         (mas/set-font-desktop))))
 
   :hook
-  (emacs-startup . mas/start-font))
+  (window-setup . mas/start-font))
 
 ;; Load packages
 
@@ -1122,6 +1122,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package lsp-mode
   :ensure t
+  :bind-keymap
+  ("C-c l" . lsp-command-map)
   :hook
   ((lsp-mode . lsp-enable-which-key-integration)
    (lsp-mode . lsp-lens-mode)
@@ -1131,7 +1133,12 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :config
   (setq lsp-file-watch-threshold 1000
         lsp-enable-indentation nil
-        lsp-headerline-breadcrumb-enable nil))
+        lsp-headerline-breadcrumb-enable nil
+        lsp-signature-auto-activate nil))
+
+(use-package lsp-origami
+  :ensure t
+  :hook (lsp-after-open . lsp-origami-try-enable))
 
 (use-package lsp-treemacs
   :ensure t
@@ -1141,7 +1148,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :commands lsp-treemacs-errors-list)
 
 (use-package lsp-ui
-  :ensure t)
+  :ensure t
+  :custom
+  ;; (lsp-ui-doc-mode nil)
+  (lsp-ui-doc-position 'top)
+  ;; :init
+  ;;   (setq lsp-ui-doc-enable nil)
+)
 
 ;; (use-package company-lsp
 ;;   :ensure t)
@@ -1160,7 +1173,16 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :bind ("M-<f12>" . 'magit-status)
   :hook (magit-mode . hl-line-mode)
   :config
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  ;; Source: https://manuel-uberti.github.io/emacs/2018/02/17/magit-bury-buffer/
+  (defun mu-magit-kill-buffers ()
+    "Restore window configuration and kill all Magit buffers."
+    (interactive)
+    (let ((buffers (magit-mode-get-buffers)))
+      (magit-restore-window-configuration)
+      (mapc #'kill-buffer buffers)))
+
+  (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map)
   )
 
 (use-package markdown-mode
