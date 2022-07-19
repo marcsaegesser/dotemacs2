@@ -164,6 +164,9 @@
   (defconst mas/fixed-pitch-font "Iosevka"
     "The default fixed-pitch typeface.")
 
+  ;; (defconst mas/fixed-pitch-font "Operator Mono Book"
+  ;;   "The default fixed-pitch typeface.")
+
   ;; (defconst mas/fixed-pitch-font "JetBrains Mono"
   ;;   "The default fixed-pitch typeface.")
 
@@ -197,6 +200,9 @@
       (if (>= (display-pixel-width) 5760)
           (mas/set-font-docked)
         (mas/set-font-desktop))))
+
+  :custom-face
+  (font-lock-comment-face ((t (:inherit font-lock-string-face :slant italic))))
 
   :hook
   (window-setup . mas/start-font))
@@ -279,6 +285,7 @@
               #'(lambda ()
                   (local-set-key (kbd "<tab>")
                                  #'company-indent-or-complete-common))))
+  (setq company-tooltip-align-annotations t)
   :config
   ;; From https://github.com/company-mode/company-mode/issues/87
   ;; See also https://github.com/company-mode/company-mode/issues/123
@@ -286,29 +293,6 @@
       (around only-show-tooltip-when-invoked activate)
     (when (company-explicit-action-p)
       ad-do-it))
-
-  ;; See http://oremacs.com/2017/12/27/company-numbers/
-  (defun ora-company-number ()
-    "Forward to `company-complete-number'.
-  Unless the number is potentially part of the candidate.
-  In that case, insert the number."
-    (interactive)
-    (let* ((k (this-command-keys))
-           (re (concat "^" company-prefix k)))
-      (if (cl-find-if (lambda (s) (string-match re s))
-                      company-candidates)
-          (self-insert-command 1)
-        (company-complete-number (string-to-number k)))))
-
-  (let ((map company-active-map))
-    (mapc
-     (lambda (x)
-       (define-key map (format "%d" x) 'ora-company-number))
-     (number-sequence 0 9))
-    (define-key map " " (lambda ()
-                          (interactive)
-                          (company-abort)
-                          (self-insert-command 1))))
 
   (defun check-expansion ()
     (save-excursion
@@ -326,19 +310,122 @@
                           (when (check-expansion)
                             #'company-complete-common))))
 
-  (eval-after-load "yasnippet"
-    '(progn
-       (defun company-mode/backend-with-yas (backend)
-         (if (and (listp backend) (member 'company-yasnippet backend))
-             backend
-           (append (if (consp backend) backend (list backend))
-                   '(:with company-yasnippet))))
-       (setq company-backends
-             (mapcar #'company-mode/backend-with-yas company-backends))))
+  ;; (eval-after-load "yasnippet"
+  ;;   '(progn
+  ;;      (defun company-mode/backend-with-yas (backend)
+  ;;        (if (and (listp backend) (member 'company-yasnippet backend))
+  ;;            backend
+  ;;          (append (if (consp backend) backend (list backend))
+  ;;                  '(:with company-yasnippet))))
+  ;;      (setq company-backends
+  ;;            (mapcar #'company-mode/backend-with-yas company-backends))))
 
-  (global-company-mode 1)
+  (global-company-mode nil) ;; Was 1
   :hook ((term-mode . (lambda () (company-mode -1)))
          (sbt-mode  . (lambda () (company-mode -1)))))
+
+
+;; (use-package company
+;;   :ensure t
+;;   :defer 5
+;;   :diminish
+;;   :commands (company-mode company-indent-or-complete-common)
+;;   :init
+;;   (dolist (hook '(emacs-lisp-mode-hook
+;;                   haskell-mode-hook
+;;                   c-mode-common-hook))
+;;     (add-hook hook
+;;               #'(lambda ()
+;;                   (local-set-key (kbd "<tab>")
+;;                                  #'company-indent-or-complete-common))))
+;;   :config
+;;   ;; From https://github.com/company-mode/company-mode/issues/87
+;;   ;; See also https://github.com/company-mode/company-mode/issues/123
+;;   (defadvice company-pseudo-tooltip-unless-just-one-frontend
+;;       (around only-show-tooltip-when-invoked activate)
+;;     (when (company-explicit-action-p)
+;;       ad-do-it))
+
+;;   ;; See http://oremacs.com/2017/12/27/company-numbers/
+;;   (defun ora-company-number ()
+;;     "Forward to `company-complete-number'.
+;;   Unless the number is potentially part of the candidate.
+;;   In that case, insert the number."
+;;     (interactive)
+;;     (let* ((k (this-command-keys))
+;;            (re (concat "^" company-prefix k)))
+;;       (if (cl-find-if (lambda (s) (string-match re s))
+;;                       company-candidates)
+;;           (self-insert-command 1)
+;;         (company-complete-number (string-to-number k)))))
+
+;;   (let ((map company-active-map))
+;;     (mapc
+;;      (lambda (x)
+;;        (define-key map (format "%d" x) 'ora-company-number))
+;;      (number-sequence 0 9))
+;;     (define-key map " " (lambda ()
+;;                           (interactive)
+;;                           (company-abort)
+;;                           (self-insert-command 1))))
+
+;;   (defun check-expansion ()
+;;     (save-excursion
+;;       (if (outline-on-heading-p t)
+;;           nil
+;;         (if (looking-at "\\_>") t
+;;           (backward-char 1)
+;;           (if (looking-at "\\.") t
+;;             (backward-char 1)
+;;             (if (looking-at "->") t nil))))))
+
+;;   (define-key company-mode-map [tab]
+;;     '(menu-item "maybe-company-expand" nil
+;;                 :filter (lambda (&optional _)
+;;                           (when (check-expansion)
+;;                             #'company-complete-common))))
+
+;;   (eval-after-load "yasnippet"
+;;     '(progn
+;;        (defun company-mode/backend-with-yas (backend)
+;;          (if (and (listp backend) (member 'company-yasnippet backend))
+;;              backend
+;;            (append (if (consp backend) backend (list backend))
+;;                    '(:with company-yasnippet))))
+;;        (setq company-backends
+;;              (mapcar #'company-mode/backend-with-yas company-backends))))
+
+;;   (global-company-mode nil) ;; Was 1
+;;   :hook ((term-mode . (lambda () (company-mode -1)))
+;;          (sbt-mode  . (lambda () (company-mode -1)))))
+
+;; (use-package company
+;;   :ensure t
+;;   :after lsp-mode
+;;   :defer 5
+;;   :diminish
+;;   ;; :commands (company-mode company-indent-or-complete-common)
+;;   :init
+;;   (dolist (hook '(emacs-lisp-mode-hook
+;;                   haskell-mode-hook
+;;                   c-mode-common-hook))
+;;     (add-hook hook
+;;               #'(lambda ()
+;;                   (local-set-key (kbd "<tab>")
+;;                                  #'company-indent-or-complete-common))))
+;;   :config
+;;   ;; From https://github.com/company-mode/company-mode/issues/87
+;;   ;; See also https://github.com/company-mode/company-mode/issues/123
+;;   (defadvice company-pseudo-tooltip-unless-just-one-frontend
+;;       (around only-show-tooltip-when-invoked activate)
+;;     (when (company-explicit-action-p)
+;;       ad-do-it))
+
+;;   (setq company-tooltip-align-annotations t)
+;;   (global-company-mode 1) ;; Was 1
+;;   :hook ((term-mode . (lambda () (company-mode -1)))
+;;          (sbt-mode  . (lambda () (company-mode -1))))
+;;   )
 
 (use-package company-elisp
   :after company
@@ -525,6 +612,11 @@
          ("C-," . er/contract-region)
          ("C-." . er/expand-region)))
 
+(use-package everlasting-scratch
+  :ensure t
+  :config
+  (everlasting-scratch-mode))
+
 (use-package flx
   :ensure t)
 
@@ -564,6 +656,7 @@
   )
 
 (use-package flyspell
+  :disabled
   :bind (("C-c i b" . flyspell-buffer)
          ("C-c i f" . flyspell-mode))
   :config
@@ -575,6 +668,11 @@
 
 (use-package foggy-night-theme
   :ensure t)
+
+;;(use-package font-lock
+;; :defer t
+;; :custom-face
+;; (font-lock-comment-face ((t (:inherit font-lock-comment-face :slant italic)))))
 
 (use-package font-lock-studio
   :ensure t)
@@ -1130,6 +1228,7 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
    (scala-mode . lsp))
   :custom
   (lsp-headerline-breadcrumb-enable nil)
+  (lsp-verify-signature nil)
   :config
   (setq lsp-file-watch-threshold 1000
         lsp-enable-indentation nil
@@ -1152,8 +1251,11 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :custom
   ;; (lsp-ui-doc-mode nil)
   (lsp-ui-doc-position 'top)
-  ;; :init
-  ;;   (setq lsp-ui-doc-enable nil)
+  (lsp-ui-sideline-show-diagnostics t)
+  (lsp-ui-sideline-show-code-actions t)
+  :init
+  (setq lsp-ui-doc-show-with-cursor t)
+    ;; (setq lsp-ui-doc-enable t)
 )
 
 ;; (use-package company-lsp
@@ -1505,6 +1607,13 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
   :ensure t
   :commands popup-imenu
   :bind ("M-i" . popup-imenu))
+
+(use-package pulsar
+  :ensure t
+  :config
+  (setq pulsar-pulse t)
+  (pulsar-global-mode 1)
+  )
 
 (use-package python-mode
   :mode "\\.py\\'"
