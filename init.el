@@ -591,6 +591,9 @@
   (column-number-mode t)
   (doom-modeline-mode 1))
 
+(use-package ef-themes
+  :ensure t)
+
 (use-package eldoc :diminish)
 
 (use-package elfeed
@@ -1117,6 +1120,8 @@ _h_tml    ^ ^         ^ ^             _A_SCII:
 
 (use-package json-mode
   :ensure t
+  :custom
+  (json-reformat:indent-width 2)
   :mode "\\.json\\'")
 
 (use-package json-reformat
